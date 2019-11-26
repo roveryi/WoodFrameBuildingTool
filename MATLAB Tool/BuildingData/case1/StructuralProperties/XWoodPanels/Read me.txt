@@ -1,0 +1,27 @@
+## Added by GUAN XINGQUAN ##
+
+length.txt: Record the length for each wall, the unit should be inch.
+
+Attention: although a building may have different number of wood panels on different stories. For example, The building in this example has 11 panels along X direction on 1st story and has 17 panels on upper stories. In this situation, there should be 11 numbers in 1st row of length.txt and 17 numbres in rest rows. However, this layout of numbers cannot be read or loaded by MATLAB. Therefore, extra numbers are added to make the layout become a 4*17 matrix. 
+
+These extra zeros does not influence the modeling procedure because they are ignored by MATLAB. The number of wood panels along X direction has been previously defined in "Geometry" folder. When for loop is used in MATLAB, the upper limit for reading data is the number of wood panels along X direction. (see MATLAB file defineWoodPanels.m for details)
+
+Detailed procedure is illustrated below:
+
+Original version of length.txt:
+
+25.37	24.00	24.00	24.00	25.37	144.63	195.47	72.01	28.78	116.50	152.50
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+
+
+Correct version of length.txt in order to be loaded by MATLAB:
+
+25.37	24.00	24.00	24.00	25.37	144.63	195.47	72.01	28.78	116.50	152.50	0	0	0	0	0	0
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+25.39	24.02	24.02	24.02	25.39	77.01	112.99	120.00	77.01	28.78	72.01	35.98	84.02	116.50	28.78	28.78	267.50
+
+
+Similar notice for SAWSMaterialNumber.txt

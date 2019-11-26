@@ -1,0 +1,424 @@
+Current Domain Information
+	Current Time: 0
+tCommitted Time: 0
+
+NODE DATA: NumNodes: 10
+
+ Node: 111017
+	Coordinates  : 0 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 111018
+	Coordinates  : 0 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 121017
+	Coordinates  : 180 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 121018
+	Coordinates  : 180 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211015
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211016
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211019
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221015
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221016
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221019
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ELEMENT DATA: NumEle: 9
+
+ElasticBeam3d: 101
+	Connected Nodes: 211015 221015 
+	CoordTransf: 4
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+
+ElasticBeam3d: 201
+	Connected Nodes: 111018 211016 
+	CoordTransf: 1
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+
+ElasticBeam3d: 202
+	Connected Nodes: 121018 221016 
+	CoordTransf: 1
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+Element: 21107 type: ZeroLength  iNode: 211019 jNode: 211015
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 3
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 7e+008, dir: 5
+Element: 22107 type: ZeroLength  iNode: 221015 jNode: 221019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 3
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 7e+008, dir: 5
+Element: 111012 type: ZeroLength  iNode: 111017 jNode: 111018
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 121012 type: ZeroLength  iNode: 121017 jNode: 121018
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 211011 type: ZeroLength  iNode: 211016 jNode: 211019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 221011 type: ZeroLength  iNode: 221016 jNode: 221019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+
+SP_Constraints: numConstraints: 12
+SP_Constraint: 0	 Node: 111017 DOF: 0 ref value: 0 current value: 0
+SP_Constraint: 1	 Node: 111017 DOF: 1 ref value: 0 current value: 0
+SP_Constraint: 2	 Node: 111017 DOF: 2 ref value: 0 current value: 0
+SP_Constraint: 3	 Node: 111017 DOF: 3 ref value: 0 current value: 0
+SP_Constraint: 4	 Node: 111017 DOF: 4 ref value: 0 current value: 0
+SP_Constraint: 5	 Node: 111017 DOF: 5 ref value: 0 current value: 0
+SP_Constraint: 6	 Node: 121017 DOF: 0 ref value: 0 current value: 0
+SP_Constraint: 7	 Node: 121017 DOF: 1 ref value: 0 current value: 0
+SP_Constraint: 8	 Node: 121017 DOF: 2 ref value: 0 current value: 0
+SP_Constraint: 9	 Node: 121017 DOF: 3 ref value: 0 current value: 0
+SP_Constraint: 10	 Node: 121017 DOF: 4 ref value: 0 current value: 0
+SP_Constraint: 11	 Node: 121017 DOF: 5 ref value: 0 current value: 0
+
+Pressure_Constraints: numConstraints: 0
+
+MP_Constraints: numConstraints: 1
+MP_Constraint: 0
+	Node Constrained: 211019 node Retained: 221019 constrained dof: 0 2 4 
+ retained dof: 0 2 4 
+ constraint matrix: 
+1 0 0 
+0 1 0 
+0 0 1 
+
+
+
+LOAD PATTERNS: numPatterns: 0
+
+
+PARAMETERS: numParameters: 0
+
+Current Domain Information
+	Current Time: 0
+tCommitted Time: 0
+
+NODE DATA: NumNodes: 10
+
+ Node: 111017
+	Coordinates  : 0 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 111018
+	Coordinates  : 0 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 121017
+	Coordinates  : 180 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 121018
+	Coordinates  : 180 0 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211015
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211016
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 211019
+	Coordinates  : 0 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221015
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221016
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ Node: 221019
+	Coordinates  : 180 111 0 
+	Disps: 0 0 0 0 0 0 
+	Velocities   : 0 0 0 0 0 0 
+
+
+ELEMENT DATA: NumEle: 9
+
+ElasticBeam3d: 101
+	Connected Nodes: 211015 221015 
+	CoordTransf: 4
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+
+ElasticBeam3d: 201
+	Connected Nodes: 111018 211016 
+	CoordTransf: 1
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+
+ElasticBeam3d: 202
+	Connected Nodes: 121018 221016 
+	CoordTransf: 1
+	End 1 Forces (P Mz Vy My Vz T): 0 0 0 0 0 -0
+	End 2 Forces (P Mz Vy My Vz T): 0 0 0 0 0 0
+Element: 21107 type: ZeroLength  iNode: 211019 jNode: 211015
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 3
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 7e+008, dir: 5
+Element: 22107 type: ZeroLength  iNode: 221015 jNode: 221019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 3
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 7e+008, dir: 5
+Element: 111012 type: ZeroLength  iNode: 111017 jNode: 111018
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 121012 type: ZeroLength  iNode: 121017 jNode: 121018
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 211011 type: ZeroLength  iNode: 211016 jNode: 211019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+Element: 221011 type: ZeroLength  iNode: 221016 jNode: 221019
+	Material1d, tag: 1200, dir: 0
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 1
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 1200, dir: 2
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 3
+	Material1d, tag: 1200, dir: 4
+Elastic tag: 1200
+  Epos: 1e+012 Eneg: 1e+012 eta: 0
+	Material1d, tag: 8e+008, dir: 5
+
+SP_Constraints: numConstraints: 12
+SP_Constraint: 0	 Node: 111017 DOF: 0 ref value: 0 current value: 0
+SP_Constraint: 1	 Node: 111017 DOF: 1 ref value: 0 current value: 0
+SP_Constraint: 2	 Node: 111017 DOF: 2 ref value: 0 current value: 0
+SP_Constraint: 3	 Node: 111017 DOF: 3 ref value: 0 current value: 0
+SP_Constraint: 4	 Node: 111017 DOF: 4 ref value: 0 current value: 0
+SP_Constraint: 5	 Node: 111017 DOF: 5 ref value: 0 current value: 0
+SP_Constraint: 6	 Node: 121017 DOF: 0 ref value: 0 current value: 0
+SP_Constraint: 7	 Node: 121017 DOF: 1 ref value: 0 current value: 0
+SP_Constraint: 8	 Node: 121017 DOF: 2 ref value: 0 current value: 0
+SP_Constraint: 9	 Node: 121017 DOF: 3 ref value: 0 current value: 0
+SP_Constraint: 10	 Node: 121017 DOF: 4 ref value: 0 current value: 0
+SP_Constraint: 11	 Node: 121017 DOF: 5 ref value: 0 current value: 0
+
+Pressure_Constraints: numConstraints: 0
+
+MP_Constraints: numConstraints: 1
+MP_Constraint: 0
+	Node Constrained: 211019 node Retained: 221019 constrained dof: 0 2 4 
+ retained dof: 0 2 4 
+ constraint matrix: 
+1 0 0 
+0 1 0 
+0 0 1 
+
+
+
+LOAD PATTERNS: numPatterns: 0
+
+
+PARAMETERS: numParameters: 0
+

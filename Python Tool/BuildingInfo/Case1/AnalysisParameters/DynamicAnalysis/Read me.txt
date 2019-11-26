@@ -1,0 +1,14 @@
+## Added by GUAN XINGQUAN ##
+
+For wood structures, damping ratio should usually be 0.01 - 0.02. Here, 0.01 is used.
+
+## Added by Zhengxiang Yi ##
+
+Different damping options are provide
+
+InitialRayleigh	Initial stiffness proportional damping 
+TangentRayleigh Tangent stiffness proportional damping
+MassRayleigh	Pure mass proportional damping
+Modal		Modal damping
+
+For modal damping model, number of modes hold be provided 
