@@ -6,6 +6,60 @@ import pandas as pd
 class BuildingModel(object):
 
   def __init__(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
+      self.ID = None
+      self.numberOfStories = None
+      self.storyHeights = None
+      self.floorHeights = None
+
+      self.floorMaximumXDimension = None
+      self.floorMaximumZDimension = None
+      self.floorAreas = None
+
+      self.leaningColumnNodesOpenSeesTags = None
+      self.leaningColumnNodesXCoordinates = None
+      self.leaningColumnNodesZCoordinates = None
+
+      self.numberOfXDirectionWoodPanels = None
+      self.numberOfZDirectionWoodPanels = None
+
+      self.XDirectionWoodPanelsXCoordinates = None
+      self.XDirectionWoodPanelsZCoordinates = None
+      self.ZDirectionWoodPanelsXCoordinates = None
+      self.ZDirectionWoodPanelsZCoordinates = None
+ 
+      self.XDirectionWoodPanelsBotTag = None
+      self.XDirectionWoodPanelsTopTag = None
+       
+      self.ZDirectionWoodPanelsBotTag = None
+      self.ZDirectionWoodPanelsTopTag = None
+
+      self.floorWeights = None
+      self.liveLoads = None
+      self.leaningcolumnLoads = None
+      self.PushoverParameter = None
+      self.DynamicParameter = None
+
+      self.MaterialProperty = None
+      self.XPanelLength = None
+      self.XPanelHeight = None
+      self.XPanelMaterial = None
+
+      self.ZPanelLength = None
+      self.ZPanelHeight = None
+      self.ZPanelMaterial = None
+
+      self.XRetrofitFlag = None 
+      self.ZRetrofitFlag = None
+ 
+      self.NumXFrames = None
+      self.XRetrofit = None
+     
+      self.NumZFrames = None
+      self.ZRetrofit = None
+          
+      self.SeismicDesignParameter = None
+
+  def read_in_txt_inputs(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
       
       self.ID = CaseID
         
