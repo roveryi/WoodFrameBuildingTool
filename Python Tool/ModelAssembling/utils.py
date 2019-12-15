@@ -464,7 +464,7 @@ def defineWoodPanelMaterials3DModel(ModelDirectory, BuildingModel):
     for i in range(BuildingModel.numberOfStories):
       tclfile.write('# Story%i \n'%(i+1))
 
-      for j in range(BuildingModel.numberOfXDirectionWoodPanels[i]):
+      for j in range(BuildingModel.numberOfZDirectionWoodPanels[i]):
         tclfile.write('# Z-Direction Story %i Panel %i \n'%(i+1,j+1))
 
         tclfile.write('uniaxialMaterial Parallel\t%i\t%i\t%i\t;\n'%(WoodPanelMaterialTag,OuterWoodPanelMaterialTag,InnerWoodPanelMaterialTag))
@@ -1204,13 +1204,9 @@ def define3DEigenValueAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Define leaning column flexural springs\n')
     tclfile.write('source DefineLeaningColumnFlexuralSprings3DModel.tcl\n\n')
 
-    if BuildingModel.XRetrofit:
-      tclfile.write('# Define x-direction retrofit \n')
-      tclfile.write('source DefineXMomentFrames3DModel.tcl\n\n')
-
-    if BuildingModel.ZRetrofit:
-      tclfile.write('# Define z-direction retrofit \n')
-      tclfile.write('source DefineZMomentFrames3DModel.tcl\n\n')
+    if BuildingModel.XRetrofit or BuildingModel.ZRetrofit:
+      tclfile.write('# Define retrofit components\n')
+      tclfile.write('source DefineRetrofit3DModel.tcl\n\n')
 
     tclfile.write('# Define masses \n')
     tclfile.write('source DefineMasses3DModel.tcl\n\n')
@@ -1250,13 +1246,9 @@ def define3DPushoverAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Define leaning column flexural springs\n')
     tclfile.write('source DefineLeaningColumnFlexuralSprings3DModel.tcl\n\n')
 
-    if BuildingModel.XRetrofit:
-      tclfile.write('# Define x-direction retrofit \n')
-      tclfile.write('source DefineXMomentFrames3DModel.tcl\n\n')
-
-    if BuildingModel.ZRetrofit:
-      tclfile.write('# Define z-direction retrofit \n')
-      tclfile.write('source DefineZMomentFrames3DModel.tcl\n\n')
+    if BuildingModel.XRetrofit or BuildingModel.ZRetrofit:
+      tclfile.write('# Define retrofit components\n')
+      tclfile.write('source DefineRetrofit3DModel.tcl\n\n')
 
     tclfile.write('# Define masses \n')
     tclfile.write('source DefineMasses3DModel.tcl\n\n')
@@ -1407,13 +1399,9 @@ def define3DDynamicAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Define leaning column flexural springs\n')
     tclfile.write('source DefineLeaningColumnFlexuralSprings3DModel.tcl\n\n')
 
-    if BuildingModel.XRetrofit:
-      tclfile.write('# Define x-direction retrofit \n')
-      tclfile.write('source DefineXMomentFrames3DModel.tcl\n\n')
-
-    if BuildingModel.ZRetrofit:
-      tclfile.write('# Define z-direction retrofit \n')
-      tclfile.write('source DefineZMomentFrames3DModel.tcl\n\n')
+    if BuildingModel.XRetrofit or BuildingModel.ZRetrofit:
+      tclfile.write('# Define retrofit components\n')
+      tclfile.write('source DefineRetrofit3DModel.tcl\n\n')
 
     tclfile.write('# Define masses \n')
     tclfile.write('source DefineMasses3DModel.tcl\n\n')

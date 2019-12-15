@@ -7,6 +7,7 @@ class BuildingModel(object):
 
   def __init__(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
       self.ID = None
+    ## Building Information
       self.numberOfStories = None
       self.storyHeights = None
       self.floorHeights = None
@@ -14,11 +15,11 @@ class BuildingModel(object):
       self.floorMaximumXDimension = None
       self.floorMaximumZDimension = None
       self.floorAreas = None
-
+    ## Nodes
       self.leaningColumnNodesOpenSeesTags = None
       self.leaningColumnNodesXCoordinates = None
       self.leaningColumnNodesZCoordinates = None
-
+    ## Panels
       self.numberOfXDirectionWoodPanels = None
       self.numberOfZDirectionWoodPanels = None
 
@@ -32,13 +33,15 @@ class BuildingModel(object):
        
       self.ZDirectionWoodPanelsBotTag = None
       self.ZDirectionWoodPanelsTopTag = None
-
+    ## Loads
       self.floorWeights = None
       self.liveLoads = None
       self.leaningcolumnLoads = None
+
+    ## Analysis Parameters
       self.PushoverParameter = None
       self.DynamicParameter = None
-
+    ## Wood Panel Materials
       self.MaterialProperty = None
       self.XPanelLength = None
       self.XPanelHeight = None
@@ -47,7 +50,7 @@ class BuildingModel(object):
       self.ZPanelLength = None
       self.ZPanelHeight = None
       self.ZPanelMaterial = None
-
+    ## Retrofit
       self.XRetrofitFlag = None 
       self.ZRetrofitFlag = None
  
@@ -56,13 +59,12 @@ class BuildingModel(object):
      
       self.NumZFrames = None
       self.ZRetrofit = None
-          
+    ## Seismic Design Parameters   
       self.SeismicDesignParameter = None
-
+      
   def read_in_txt_inputs(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
       
       self.ID = CaseID
-        
 ##################################################################################################
 # Read in Geometry
       os.chdir(BaseDirectory + '/Geometry')
@@ -115,7 +117,7 @@ class BuildingModel(object):
       os.chdir(BaseDirectory + '/Loads')
       self.floorWeights = np.genfromtxt('floorWeights.txt'); # (kips)
       self.liveLoads = np.genfromtxt('liveLoads.txt'); # (kips per square inch)
-      self.leaningcolumnLoads = np.genfromtxt('leaningcolumnLoads .txt'); # (kips)
+      self.leaningcolumnLoads = np.genfromtxt('leaningcolumnLoads.txt'); # (kips)
 
 ################################################################################################        
 # Read in Pushover Analysis Parameters
@@ -210,11 +212,12 @@ class BuildingModel(object):
         self.NumXFrames = np.loadtxt('numberOfXFrames.txt')
         self.XRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/XMomentFrames', self.NumXFrames)
       else: self.XRetrofit = None
-        
+
+      os.chdir(BaseDirectory + '/FrameRetrofit')
       if self.ZRetrofitFlag:
-        os.chdir('XMomentFrames')
+        os.chdir('ZMomentFrames')
         self.NumZFrames = np.loadtxt('numberOfZFrames.txt')
-        self.ZRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/XMomentFrames', self.NumZFrames)
+        self.ZRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/ZMomentFrames', self.NumZFrames)
         
       else: self.ZRetrofit = None
           
@@ -265,7 +268,9 @@ class BuildingModel(object):
                                        'ELF Base Shear': TotalWeight * Cs,
                                        'Cvx': Cvx
                                       }
-        
+  def read_in_json_inputs(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
+      pass
+
   def determine_Fa_coefficient(self, site_class, Ss):
       """
       This function is used to determine Fa coefficient, which is based on ASCE 7-10 Table 11.4-1
@@ -485,6 +490,7 @@ class BuildingModel(object):
         # go into the directory containing the information of each frame 
         os.chdir(FrameInfoDirectory + '/Frame%i'%(i+1))
         
+        # Beam section can be None to represent canteliver retrofit case
         BeamSection = []
         with open('BeamSection.txt','rb') as f:
             for line in f:
@@ -494,7 +500,32 @@ class BuildingModel(object):
         with open('ColumnSection.txt','rb') as f:
             for line in f:
                 ColSection.append(line.decode().strip())
-                
+        os.chdir(FrameInfoDirectory + '/Frame%i/Beams'%(i+1))  
+        BeamArea = np.loadtxt('A.txt').tolist()
+        BeamI = np.loadtxt('I.txt').tolist()
+
+        os.chdir(FrameInfoDirectory + '/Frame%i/BeamHinges'%(i+1))  
+        BeamHingeParam = {
+            'Lambda': np.loadtxt('lambda.txt').tolist(),
+            'McMy': 1.11,
+            'My': np.loadtxt('My.txt').tolist(),
+            'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
+            'theta_p': np.loadtxt('thetaCap.txt').tolist(),
+            'theta_u': 0.4
+        }
+        os.chdir(FrameInfoDirectory + '/Frame%i/Columns'%(i+1))  
+        ColumnArea = np.loadtxt('A.txt').tolist()
+        ColumnI = np.loadtxt('I.txt').tolist()
+        os.chdir(FrameInfoDirectory + '/Frame%i/ColumnHinges'%(i+1))  
+        ColumnHingeParam = {
+            'Lambda': np.loadtxt('lambda.txt').tolist(),
+            'McMy': 1.11,
+            'My': np.loadtxt('My.txt').tolist(),
+            'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
+            'theta_p': np.loadtxt('thetaCap.txt').tolist(),
+            'theta_u': 0.4
+        }
+
         os.chdir(FrameInfoDirectory + '/Frame%i/FrameNodes'%(i+1))
         BeamHingeCoor = np.loadtxt('BeamHingeNodeCoordinates.txt').tolist()
         BeamHingeOSLabel = np.loadtxt('BeamHingeNodeNumbers.txt').tolist()
@@ -505,6 +536,12 @@ class BuildingModel(object):
         
         SingleFrameInfo = {'BeamSection': BeamSection,
                           'ColSection': ColSection,
+                          'BeamArea': BeamArea,
+                          'BeamI':BeamI,
+                          'BeamHingeParameter': BeamHingeParam,
+                          'ColumnArea': ColumnArea,
+                          'ColumnI': ColumnI,
+                          'ColumnHingeParameter': ColumnHingeParam,
                           'BeamHingeCoor': BeamHingeCoor,
                           'BeamHingeOSLabel': BeamHingeOSLabel,
                           'ColHingeCoor': ColHingeCoor,
