@@ -88,8 +88,8 @@ set b_bm	[expr ($a_bm)/(1.0+$n*(1.0-$a_bm))];
 
 #define beam springs
 #Spring ID: "8xya", where 8 = beam spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	8512	9112	8112	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
-rotSpring3DRotZModIKModel	8522	9122	8122	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17224	9112	8112	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17244	9122	8122	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
 #Define beams
 element elasticBeamColumn	81128122	8112	8122	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$XBeamLinearTransf;
 
@@ -128,8 +128,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7511	9111	7111	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7521	9121	7121	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16222	9111	7111	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16242	9121	7121	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	71117112	7111	7112	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 
@@ -168,8 +168,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7512	9112	7112	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7522	9122	7122	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16224	9112	7112	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16244	9122	7122	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	71217122	7121	7122	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 
@@ -182,14 +182,14 @@ node	9132	60.0000	111.0000	0.0000;
 node	9142	240.0000	111.0000	0.0000;
 
 #Beam Hinge Nodes 
-node	8132	60.0000	111.0000	360.0000;
-node	8142	240.0000	111.0000	360.0000;
+node	8132	60.0000	111.0000	0.0000;
+node	8142	240.0000	111.0000	0.0000;
 
 #Column Hinge Nodes 
-node	7131	60.0000	0.0000	360.0000;
-node	7141	240.0000	0.0000	360.0000;
-node	7132	60.0000	111.0000	360.0000;
-node	7142	240.0000	111.0000	360.0000;
+node	7131	60.0000	0.0000	0.0000;
+node	7141	240.0000	0.0000	0.0000;
+node	7132	60.0000	111.0000	0.0000;
+node	7142	240.0000	111.0000	0.0000;
 
 #Frame Fixities
 fix	9131	1	1	1	1	1	1;
@@ -239,8 +239,8 @@ set b_bm	[expr ($a_bm)/(1.0+$n*(1.0-$a_bm))];
 
 #define beam springs
 #Spring ID: "8xya", where 8 = beam spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	8532	9132	8132	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
-rotSpring3DRotZModIKModel	8542	9142	8142	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17264	9132	8132	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17284	9142	8142	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
 #Define beams
 element elasticBeamColumn	81328142	8132	8142	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$XBeamLinearTransf;
 
@@ -279,8 +279,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7531	9131	7131	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7541	9141	7141	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16262	9131	7131	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16282	9141	7141	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	71317132	7131	7132	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 
@@ -319,8 +319,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7532	9132	7132	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7542	9142	7142	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16264	9132	7132	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16284	9142	7142	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	71417142	7141	7142	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 
@@ -333,14 +333,14 @@ node	9212	0.0000	111.0000	90.0000;
 node	9222	0.0000	111.0000	270.0000;
 
 #Beam Hinge Nodes 
-node	8212	60.0000	111.0000	360.0000;
-node	8222	240.0000	111.0000	360.0000;
+node	8212	0.0000	111.0000	90.0000;
+node	8222	0.0000	111.0000	270.0000;
 
 #Column Hinge Nodes 
-node	7211	60.0000	0.0000	360.0000;
-node	7221	240.0000	0.0000	360.0000;
-node	7212	60.0000	111.0000	360.0000;
-node	7222	240.0000	111.0000	360.0000;
+node	7211	0.0000	0.0000	90.0000;
+node	7221	0.0000	0.0000	270.0000;
+node	7212	0.0000	111.0000	90.0000;
+node	7222	0.0000	111.0000	270.0000;
 
 #Frame Fixities
 fix	9211	1	1	1	1	1	1;
@@ -390,8 +390,8 @@ set b_bm	[expr ($a_bm)/(1.0+$n*(1.0-$a_bm))];
 
 #define beam springs
 #Spring ID: "8xya", where 8 = beam spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	8612	9212	8212	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
-rotSpring3DRotZModIKModel	8622	9222	8222	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17424	9212	8212	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotZModIKModel	17444	9222	8222	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
 #Define beams
 element elasticBeamColumn	82128222	8212	8222	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$ZBeamLinearTransf;
 
@@ -430,8 +430,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7511	9211	7211	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7521	9221	7221	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16422	9211	7211	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16442	9221	7221	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	72117212	7211	7212	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 
@@ -470,8 +470,8 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	7512	9212	7212	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	7522	9222	7222	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16424	9212	7212	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotZModIKModel	16444	9222	7222	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
 element elasticBeamColumn	72217222	7221	7222	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
 

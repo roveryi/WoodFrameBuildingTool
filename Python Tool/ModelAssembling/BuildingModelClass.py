@@ -61,7 +61,7 @@ class BuildingModel(object):
       self.ZRetrofit = None
     ## Seismic Design Parameters   
       self.SeismicDesignParameter = None
-      
+
   def read_in_txt_inputs(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
       
       self.ID = CaseID
@@ -218,7 +218,6 @@ class BuildingModel(object):
         os.chdir('ZMomentFrames')
         self.NumZFrames = np.loadtxt('numberOfZFrames.txt')
         self.ZRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/ZMomentFrames', self.NumZFrames)
-        
       else: self.ZRetrofit = None
           
 ##################################################################################################
@@ -485,7 +484,7 @@ class BuildingModel(object):
 
   def extractRetrofitFrameInfo(self, FrameInfoDirectory, numFrames):
       FrameInfo = []
-      
+    
       for i in range(int(numFrames)):
         # go into the directory containing the information of each frame 
         os.chdir(FrameInfoDirectory + '/Frame%i'%(i+1))

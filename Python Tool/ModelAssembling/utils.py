@@ -1532,6 +1532,293 @@ def generateDynamicAnalysisModel(ID, BuildingModel, BaseDirectory, ModalPeriod, 
         define3DDynamicAnalysisModel(ModelDirectory + '/DynamicAnalysis', BuildingModel)
         
 
+def defineMomentFrame3DModel(ModelDirectory, BuildingModel):
+    os.chdir(ModelDirectory)
+    with open('DefineRetrofit3DModel.tcl','w') as tclfile:
+        tclfile.write('## Define Beam Section Properties and Element\n')
+        tclfile.write('# These number can be modified regarding convergence issues]\n')
+        tclfile.write('uniaxialMaterial Elastic\t99999\t1e-8;\n')
+        tclfile.write('uniaxialMaterial Elastic\t199999\t1e8;\n\n')
+        tclfile.write('# Define Material Properties\n')
+        tclfile.write('set\tEs\t29000.0; #steel Young modulus\n')
+        tclfile.write('set\tG\t11500.0; # steel shear modulus\n')
+        tclfile.write('set\tn\t10.0; # stiffness multiplier for rotational spring\n\n')
+        tclfile.write('## Define Moment Frame Damping Parameters\n')
+        tclfile.write('set omegaI [expr (2.0 * $pi) / $periodForRayleighDamping_1];\n')
+        tclfile.write('set omegaJ [expr (2.0 * $pi) / ($periodForRayleighDamping_2)];\n')
+        tclfile.write('set alpha1Coeff [expr (2.0 * $omegaI * $omegaJ) / ($omegaI + $omegaJ)];\n')
+        tclfile.write('set alpha2Coeff [expr (2.0) / ($omegaI + $omegaJ)];\n')
+        tclfile.write('set alpha1  [expr $alpha1Coeff*0.02];\n')
+        tclfile.write('set alpha2  [expr $alpha2Coeff*0.02];\n')
+        tclfile.write('set alpha2ToUse [expr 1.1 * $alpha2];  # 1.1 factor is becuase we apply to only LE elements\n\n')
+
+        tclfile.write('#Define Geometric Transformations\n')
+        tclfile.write('set XBeamLinearTransf 4;\n')
+        tclfile.write('geomTransf Linear $XBeamLinearTransf\t0\t0\t1;\n\n')
+        tclfile.write('set ZBeamLinearTransf 3;\n')
+        tclfile.write('geomTransf Linear $ZBeamLinearTransf\t1\t0\t0;\n\n')       
+
+        if BuildingModel.XRetrofit:
+            for i in BuildingModel.XRetrofit:
+                writeSingleFrameInfo(tclfile, BuildingModel, i, 'x', section_db, True)
+        
+        if BuildingModel.ZRetrofit:
+            for i in BuildingModel.ZRetrofit:
+                writeSingleFrameInfo(tclfile, BuildingModel, i, 'z', section_db, True)
+
+
+
+def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, DBFlag = True):
+    tclfile.write('#Joint Nodes \n')
+    for i,j in enumerate(FrameDict['JointCoor']):
+        tclfile.write('node\t%i\t%.4f\t%.4f\t%.4f;\n'%(FrameDict['JointOSLabel'][i],j[0],j[1],j[2]))
+    tclfile.write('\n')
+
+    tclfile.write('#Beam Hinge Nodes \n')
+    for i,j in enumerate(FrameDict['BeamHingeCoor']):
+        tclfile.write('node\t%i\t%.4f\t%.4f\t%.4f;\n'%(FrameDict['BeamHingeOSLabel'][i],j[0],j[1],j[2]))
+    tclfile.write('\n')
+
+    tclfile.write('#Column Hinge Nodes \n')
+    for i,j in enumerate(FrameDict['ColHingeCoor']):
+        tclfile.write('node\t%i\t%.4f\t%.4f\t%.4f;\n'%(FrameDict['ColHingeOSLabel'][i],j[0],j[1],j[2]))  
+    tclfile.write('\n')
+
+    tclfile.write('#Frame Fixities\n')
+    for i,j in enumerate(FrameDict['JointCoor']):
+        if j[1] == 0:
+            tclfile.write('fix\t%i\t%i\t%i\t%i\t%i\t%i\t%i;\n'%(FrameDict['JointOSLabel'][i],1,1,1,1,1,1))
+    tclfile.write('\n')
+
+    tclfile.write('#Joint Nodes Rigid Diaphragm\n')
+    tclfile.write('#Seeting rigid floor diaphragm constraint on\n')
+    tclfile.write('set RigidDiaphragm ON;\n')
+    tclfile.write('set perpDirn\t2;\n')
+
+    floorlabel = 2000
+    for k in range(1, len(ModelClass.floorHeights)):
+        for i,j in enumerate(FrameDict['JointCoor']):
+            if j[1] == ModelClass.floorHeights[k]:
+                tclfile.write('rigidDiaphragm\t$perpDirn\t%i\t%i;\n'%(floorlabel,FrameDict['JointOSLabel'][i]))
+        floorlabel += 1000
+    tclfile.write('\n')
+    tclfile.write('#Define Moment Frame Beam Section Properties and Element\n')
+    ComponentID = []
+    # There not necessarily exists beam in the retrofit, where the cases represent canteliver column retorfit 
+    if FrameDict['BeamSection']:
+        # Two options: select based on section or select based on self-defined area and moment of intertia 
+        # If section size is directly used, hinge parameters would be directly calculated
+        # Otherwise, the hinge parameters should be given 
+        if DBFlag: 
+            s_info = extractSectionInfo(FrameDict['BeamSection'][0], section_db)
+            s_info['unbraced_length'] = compute3DDistance(FrameDict['BeamHingeCoor'])
+            Abm, Ibm = s_info['A'], s_info['Ix'] # Section information 
+            hinge_param = calculateHingeParameters(s_info) # Compute hinge parameters
+            FrameDict['BeamHingeParameter'] = hinge_param
+        else: 
+            Abm, Ibm = FrameDict['BeamArea'], FrameDict['BeamI']
+            hingeparam = FrameDict['BeamHingeParameter']
+
+        tclfile.write('set Abm\t%.4f; # cross-section area \n'%Abm)
+        tclfile.write('set Ibm\t%.4f; # momment of inertia \n'%Ibm)
+        tclfile.write('set Ibm_mod\t[expr $Ibm*($n + 1.0/$n)]; # modified moment of inertia for beam \n')
+        tclfile.write('set Jbm\t1000000.0; # inertia of tortion for beam, just assign a small number \n')
+        tclfile.write('set WBay\t%.4f; # bay length \n'%compute3DDistance(FrameDict['BeamHingeCoor']))
+        tclfile.write('set Ks_bm\t[expr $n*6.0*$Es*$Ibm_mod/$WBay]; # rotational stiffness of beam springs \n\n')
+
+        tclfile.write('#define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure\n')
+        tclfile.write('#rotSpring3DModIKModel creates a uniaxial material spring with a bilinear response based on Modified Ibarra Krawinkler Deterioration Model\n\n')
+        tclfile.write('#define beam hinges\n')
+        tclfile.write('set My_bm\t%.4f; #yield moment\n'%(hinge_param['My']))
+        tclfile.write('set McMy_bm\t%.4f; \n'%(hinge_param['McMy']))
+        tclfile.write('set LS_bm\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set LK_bm\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set LA_bm\t%.4f; \n'%1000)
+        tclfile.write('set LD_bm\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set cS_bm\t%.2f; \n'%1)
+        tclfile.write('set cK_bm\t%.2f; \n'%1)
+        tclfile.write('set cA_bm\t%.2f; \n'%1)
+        tclfile.write('set cD_bm\t%.2f; \n'%1)
+        tclfile.write('set theta_pP_bm\t%.4f; \n'%hinge_param['theta_p'])
+        tclfile.write('set theta_pN_bm\t%.4f; \n'%hinge_param['theta_p'])
+        tclfile.write('set theta_pcP_bm\t%.4f; \n'%hinge_param['theta_pc'])
+        tclfile.write('set theta_pcN_bm\t%.4f; \n'%hinge_param['theta_pc'])
+        tclfile.write('set ResP_bm\t%.4f; \n'%0.4)
+        tclfile.write('set ResN_bm\t%.4f; \n'%0.4)
+        tclfile.write('set theta_uP_bm\t%.4f; \n'%hinge_param['theta_u'])
+        tclfile.write('set theta_uN_bm\t%.4f; \n'%hinge_param['theta_u'])
+        tclfile.write('set DP_bm\t%.2f; \n'%1)
+        tclfile.write('set DN_bm\t%.2f; \n'%1)
+        tclfile.write('set a_bm\t[expr ($n+1.0)*($My_bm*($McMy_bm-1.0)) / ($Ks_bm*$theta_pP_bm)];\n')
+        tclfile.write('set b_bm\t[expr ($a_bm)/(1.0+$n*(1.0-$a_bm))];\n\n')
+
+        tclfile.write('#define beam springs\n')
+        tclfile.write('#Spring ID: "8xya", where 8 = beam spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame\n')
+
+        # if Direction == 'x':
+        #     BeamHingeID = 8500
+        # elif Direction == 'z':
+        #     BeamHingeID = 8600
+        # else: print('Invalid direction')
+
+        for i, j in zip(FrameDict['BeamHingeCoor'], FrameDict['BeamHingeOSLabel']):
+            BeamNodeLabel = FrameDict['JointOSLabel'][FrameDict['JointCoor'].index(i)]
+            tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]\t$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm\t$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm\t$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;\n'%(BeamNodeLabel+j, BeamNodeLabel, j))
+
+        tclfile.write('#Define beams\n')
+        if Direction == 'x':
+            tclfile.write('element elasticBeamColumn\t%s\t%i\t%i\t $Abm\t$Es\t$G\t$Jbm\t$Ibm\t$Ibm\t$XBeamLinearTransf;\n\n'%(str(int(FrameDict['BeamHingeOSLabel'][0]))+str(int(FrameDict['BeamHingeOSLabel'][1])), FrameDict['BeamHingeOSLabel'][0],FrameDict['BeamHingeOSLabel'][1]))
+        elif Direction == 'z':
+            tclfile.write('element elasticBeamColumn\t%s\t%i\t%i\t $Abm\t$Es\t$G\t$Jbm\t$Ibm\t$Ibm\t$ZBeamLinearTransf;\n\n'%(str(int(FrameDict['BeamHingeOSLabel'][0]))+str(int(FrameDict['BeamHingeOSLabel'][1])), FrameDict['BeamHingeOSLabel'][0],FrameDict['BeamHingeOSLabel'][1]))            
+        ComponentID.append(str(int(FrameDict['BeamHingeOSLabel'][0]))+str(int(FrameDict['BeamHingeOSLabel'][1])))
+
+# Loop over all columns
+    for i in range(len(FrameDict['ColSection'])):
+        if DBFlag: 
+            s_info = extractSectionInfo(FrameDict['ColSection'][i], section_db)
+            s_info['unbraced_length'] = compute3DDistance(FrameDict['ColHingeCoor'][2*i:2*(i+1)])
+            Acol, Icol = s_info['A'], s_info['Ix'] # Section information 
+            hinge_param = calculateHingeParameters(s_info) # Compute hinge parameters
+            FrameDict['ColumnHingeParameter'] = hinge_param
+        else: 
+            Acol, Icol = FrameDict['ColumnArea'][i], ModelClass.XRetrofit[0]['ColumnI'][i]
+            hingeparam = FrameDict['ColumnHingeParameter']
+
+        tclfile.write('set Acol\t%.4f; # cross-section area \n'%Acol)
+        tclfile.write('set Icol\t%.4f; # momment of inertia \n'%Icol)
+        tclfile.write('set Icol_mod\t[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam \n')
+        tclfile.write('set Jcol\t1000000.0; # inertia of tortion for beam, just assign a small number \n')
+        tclfile.write('set HStory\t%.4f; # column length \n'%compute3DDistance(FrameDict['ColHingeCoor'][2*i:2*(i+1)]))
+        tclfile.write('set Ks_col\t[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs \n\n')
+
+        tclfile.write('#define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure\n')
+        tclfile.write('#rotSpring3DModIKModel creates a uniaxial material spring with a bilinear response based on Modified Ibarra Krawinkler Deterioration Model\n\n')
+        tclfile.write('set My_col\t%.4f; #yield moment\n'%(hinge_param['My']))
+        tclfile.write('set McMy_col\t%.4f; \n'%(hinge_param['McMy']))
+        tclfile.write('set LS_col\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set LK_col\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set LA_col\t%.4f; \n'%1000)
+        tclfile.write('set LD_col\t%.4f; \n'%((hinge_param['Lambda']/hinge_param['theta_p'])*11))
+        tclfile.write('set cS_col\t%.2f; \n'%1)
+        tclfile.write('set cK_col\t%.2f; \n'%1)
+        tclfile.write('set cA_col\t%.2f; \n'%1)
+        tclfile.write('set cD_col\t%.2f; \n'%1)
+        tclfile.write('set theta_pP_col\t%.4f; \n'%hinge_param['theta_p'])
+        tclfile.write('set theta_pN_col\t%.4f; \n'%hinge_param['theta_p'])
+        tclfile.write('set theta_pcP_col\t%.4f; \n'%hinge_param['theta_pc'])
+        tclfile.write('set theta_pcN_col\t%.4f; \n'%hinge_param['theta_pc'])
+        tclfile.write('set ResP_col\t%.4f; \n'%0.4)
+        tclfile.write('set ResN_col\t%.4f; \n'%0.4)
+        tclfile.write('set theta_uP_col\t%.4f; \n'%hinge_param['theta_u'])
+        tclfile.write('set theta_uN_col\t%.4f; \n'%hinge_param['theta_u'])
+        tclfile.write('set DP_col\t%.2f; \n'%1)
+        tclfile.write('set DN_col\t%.2f; \n'%1)
+        tclfile.write('set a_col\t[expr ($n+1.0)*($My_col*($McMy_col-1.0)) / ($Ks_col*$theta_pP_col)];\n')
+        tclfile.write('set b_col\t[expr ($a_col)/(1.0+$n*(1.0-$a_col))];\n\n')   
+
+        tclfile.write('#define column springs\n')
+        tclfile.write('#Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame\n')
+
+        # Direction = 'x'
+        # if Direction == 'x':
+        #     ColHingeID = 7500
+        # elif Direction == 'z':
+        #     ColHingeID = 7600
+        # else: print('Invalid direction')
+
+        for p, q in zip(FrameDict['ColHingeCoor'][2*i:2*(i+1)], FrameDict['ColHingeOSLabel'][2*i:2*(i+1)]):
+            ColNodeLabel = FrameDict['JointOSLabel'][FrameDict['JointCoor'].index(p)]
+            tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_col $b_col $b_col $My_col [expr -$My_col]\t$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col\t$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col\t$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;\n'%(ColNodeLabel+q, ColNodeLabel, q))
+
+        tclfile.write('#Define columns\n')
+        tclfile.write('element elasticBeamColumn\t%s\t%i\t%i\t $Abm\t$Es\t$G\t$Jbm\t$Ibm\t$Ibm\t$PDeltaTransf;\n\n'%(str(int(FrameDict['ColHingeOSLabel'][i]))+str(int(FrameDict['ColHingeOSLabel'][i+2])), FrameDict['ColHingeOSLabel'][i],FrameDict['ColHingeOSLabel'][i+2]))   
+        ComponentID.append(str(int(FrameDict['ColHingeOSLabel'][i]))+str(int(FrameDict['ColHingeOSLabel'][i+2])))
+
+    tclfile.write('region\t10\t-node\t')
+    for i in FrameDict['JointOSLabel']:
+        tclfile.write('%i\t'%i)
+    tclfile.write('-rayleigh\t$alpha1\t0\t$alpha2ToUse\t0;\n')
+    tclfile.write('region\t20\t-ele\t')
+    for i in ComponentID:
+        tclfile.write('%s\t'%i)
+    tclfile.write('-rayleigh\t$alpha1\t0\t$alpha2ToUse\t0;\n')
+
+###########################################
+os.chdir('/Users/rover/Desktop/WoodFrameBuilding/Python Tool/ModelAssembling')
+section_db = pd.read_csv('Database.csv',encoding = "ISO-8859-1")
+
+def extractSectionInfo(Section, DB):
+    output = {'A': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'A'].values[0]),
+    'd': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'd'].values[0]),
+    'tf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tf'].values[0]),
+    'Ix': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Ix'].values[0]),
+    'Zx': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Zx'].values[0]),
+    'tw': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tw'].values[0]),
+    'bf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'bf'].values[0]),
+    'ry': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'ry'].values[0])}
+    return output
+     
+def calculateHingeParameters(section):
+        """
+        This method is used to compute the modeling parameters for plastic hinge using modified IMK material model.
+        :return: a dictionary including each parameters required for nonlinear modeling in OpenSees.
+        """
+        # Following content is based on the following reference:
+        # [1] Hysteretic models tha incorporate strength and stiffness deterioration
+        # [2] Deterioration modeling of steel components in support of collapse prediction of steel moment frames under
+        #     earthquake loading
+        # [3] Global collapse of frame structures under seismic excitations
+        # [4] Sidesway collapse of deteriorating structural systems under seismic excitations
+        # dictionary keys explanations:
+        #                              K0: beam stiffness, 6*E*Iz/L
+        #                              Myp: bending strength, product of section modulus and material yield strength
+        #                              My: effective yield strength, 1.06 * bending strength
+        #                              Lambda: reference cumulative plastic rotation
+        #                              theta_p: pre-capping plastic rotation
+        #                              theta_pc: post-capping plastic rotation
+        #                              as: strain hardening before modified by n (=10)
+        #                              residual: residual strength ratio, use 0.40 per Lignos' OpenSees example
+        #                              theta_u: ultimate rotation, use 0.40 per Lignos' OpenSees example
+        # Note that for column, the unbraced length is the column length itself.
+        # units: kips, inches
+        # Note that column unbraced length is in feet, remember to convert it to inches
+        c1 = 25.4  # c1_unit
+        c2 = 6.895  # c2_unit
+        McMy = 1.11  # Capping moment to yielding moment ratio. Lignos et al. used 1.05 whereas Prof. Burton used 1.11.
+        Fy = 50 # Use 50ksi for woodframe building retrofit 
+        plastic_hinge = {}
+        h = section['d'] - 2*section['tf']  # Web depth
+        plastic_hinge['McMy'] = 1.11
+        plastic_hinge['K0'] = 6 * 29000 * section['Ix'] / (section['unbraced_length']) # Unbraced length should be in in
+        plastic_hinge['Myp'] = section['Zx'] * Fy
+        plastic_hinge['My'] = 1.06 * plastic_hinge['Myp']
+        plastic_hinge['Lambda'] = 585 * (h/section['tw'])**(-1.14) \
+                                       * (section['bf']/(2*section['tf']))**(-0.632) \
+                                       * (section['unbraced_length']/section['ry'])**(-0.205) \
+                                       * (c2 * Fy/355)**(-0.391)
+        plastic_hinge['theta_p'] = 0.19 * (h/section['tw'])**(-0.314) \
+                                        * (section['bf']/(2*section['tf']))**(-0.100) \
+                                        * (section['unbraced_length']/section['ry'])**(-0.185) \
+                                        * (section['unbraced_length']/section['d'])**0.113 \
+                                        * (c1*section['d']/533)**(-0.760) \
+                                        * (c2*Fy/355)**(-0.070)
+        plastic_hinge['theta_pc'] = 9.52 * (h/section['tw'])**(-0.513) \
+                                         * (section['bf']/(2*section['tf']))**(-0.863) \
+                                         * (section['unbraced_length']/section['ry'])**(-0.108) \
+                                         * (c2*Fy/355)**(-0.360)
+        plastic_hinge['as'] = (McMy-1.0)*plastic_hinge['My']\
+                                   /(plastic_hinge['theta_p']*plastic_hinge['K0'])
+        plastic_hinge['residual'] = 0.40
+        plastic_hinge['theta_u'] = 0.40
+
+        return plastic_hinge
+
+def compute3DDistance(coor):
+    diff = [x-y for x, y in zip(coor[0] ,coor[1])]
+    dif2 = [x**2 for x in diff]
+    return np.sqrt(sum(dif2))  
+
+
 def SaveModelJason(BuildingModelClass, FileName):
     # Convert all sub-sequences to list, since np.ndarry is not supported by json format
     model_dict = {}
@@ -1550,5 +1837,3 @@ def SaveModelJason(BuildingModelClass, FileName):
 
     with open(FileName,'w') as file:
         json.dump(model_dict, file, indent = 2)
-    
-   
