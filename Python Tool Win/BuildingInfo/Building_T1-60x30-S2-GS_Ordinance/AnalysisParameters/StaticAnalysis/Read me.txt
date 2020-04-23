@@ -1,0 +1,7 @@
+## Added by GUAN XINGQUAN ##
+
+PushoverIncrementSize: Pushover loading is applied in discrete displacement-based increments. The size of the increment as expressed by a fraction of the maximum diplacement is entered as a scalar value into the txt.
+
+PushoverXDrift: The maximum roof drift for the pushover analysis in the X direction (expressed as a percentage, i.e., a value of 1 means that the maximum pushover displacement applied correspond to 1% roof drift or 0.01 roof drift ratio) is entered as a scalar value in to the txt.
+
+PushoverZDrift: The maximum roof drift fo the pushover analysis in the Z direction

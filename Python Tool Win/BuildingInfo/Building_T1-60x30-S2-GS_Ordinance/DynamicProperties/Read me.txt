@@ -1,0 +1,3 @@
+## Added by GUAN XINGQUAN ##
+
+For wood strcutures, damping ratio should usually be 0.01 - 0.02. Here, 0.01 is used.
