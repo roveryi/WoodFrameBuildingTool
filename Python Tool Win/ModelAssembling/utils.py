@@ -1453,8 +1453,7 @@ def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory, N
         define3DEigenValueAnalysisModel(ModelDirectory + '/EigenValueAnalysis', BuildingModel)
 
         os.system("cd %s/EigenValueAnalysis"%ModelDirectory)
-        #ShellExecute(0,'open','OpenSees', 'source Model.tcl', '', 0)
-        #!OpenSees Model.tcl
+        os.system('OpenSees Model.tcl')
     
     with open(ModelDirectory + '/EigenValueAnalysis/Analysis_Results/Modes/periods.out', 'r') as f:
         temp = f.read() 
@@ -1498,8 +1497,8 @@ def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory
         
     if RunPushoverSwitch:
         os.system("cd %s/PushoverAnalysis"%ModelDirectory)
-        #!OpenSees RunXPushoverAnalysis.tcl
-        #!OpenSees RunZPushoverAnalysis.tcl
+        os.system('OpenSees RunXPushoverAnalysis.tcl')
+        os.system('OpenSees RunZPushoverAnalysis.tcl')
         
         
 
