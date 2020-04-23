@@ -12,3 +12,7 @@ recorder	Node	-file	XPanelBaseNodesHorizontalReactions.out	-time	-node	11011	110
 recorder	Node	-file	ZPanelBaseNodesHorizontalReactions.out	-time	-node	13011	13021	13031	13041	13051	13061	13071	13081	13091	-dof	3	reaction
 recorder	Node	-file	LeaningColumnBaseNodeXHorizontalReactions.out	-time	-node	1000	1100	1200	1300	1400	1500	1600	1700	1800	-dof	1	reaction
 recorder	Node	-file	LeaningColumnBaseNodeZHorizontalReactions.out	-time	-node	1000	1100	1200	1300	1400	1500	1600	1700	1800	-dof	3	reaction
+# X-direction frame base node horizontal reactions
+recorder	Node	-file	OMFXHorizontalReactions.out	-time	-node	9111	9121	9131	9141	-dof	1	reaction
+# Z-direction frame base node horizontal reactions
+recorder	Node	-file	OMFZHorizontalReactions.out	-time	-node	9211	9221	-dof	3	reaction

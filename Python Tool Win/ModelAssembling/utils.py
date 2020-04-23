@@ -659,63 +659,75 @@ def defineAllRecorders3DModel(ModelDirectory, AnalysisType):
       
       
 def defineBaseReactionRecorders3DModel(ModelDirectory,BuildingModel,AnalysisType):
-  os.chdir(ModelDirectory)
-  
-  with open('DefineBaseReactionRecorders3DModel.tcl', 'w') as tclfile:
+    os.chdir(ModelDirectory)
     
-    tclfile.write('# Define base node reaction recorders \n')
-    tclfile.write('\n')
+    with open('DefineBaseReactionRecorders3DModel.tcl', 'w') as tclfile:
+        tclfile.write('# Define base node reaction recorders \n')
+        tclfile.write('\n')
+        numLeaningColumn = BuildingModel.leaningColumnNodesOpenSeesTags.shape[1]
+        if 'Dynamic' in AnalysisType:
+            tclfile.write('cd $pathToResults/EQ_$folderNumber/BaseReactions \n\n')
+        elif 'Pushover' in AnalysisType:
+            tclfile.write('cd $baseDir/$dataDir/BaseReactions \n\n')
+            
+        tclfile.write('# Base node vertical reactions \n')
+        
+        tclfile.write('recorder\tNode\t-file\tXPanelBaseNodesVerticalReactions.out\t-time\t-node\t')
+        for i in range(BuildingModel.numberOfXDirectionWoodPanels[0]):
+            tclfile.write('%i\t'%BuildingModel.XDirectionWoodPanelsBotTag[0,i])
+        tclfile.write('-dof\t2\treaction\n')
+        
+        tclfile.write('recorder\tNode\t-file\tZPanelBaseNodesVerticalReactions.out\t-time\t-node\t')
+        for i in range(BuildingModel.numberOfZDirectionWoodPanels[0]):
+            tclfile.write('%i\t'%BuildingModel.ZDirectionWoodPanelsBotTag[0,i])
+        tclfile.write('-dof\t2\treaction\n')
+        
+        tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeVerticalReactions.out\t-time\t-node\t')
+        for i in range(numLeaningColumn):
+            tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
+        tclfile.write('-dof\t2\treaction\n')
+        tclfile.write('\n')
+        
+        tclfile.write('# Base node horizontal reactions \n')
+        
+        tclfile.write('recorder\tNode\t-file\tXPanelBaseNodesHorizontalReactions.out\t-time\t-node\t')
+        for i in range(BuildingModel.numberOfXDirectionWoodPanels[0]):
+            tclfile.write('%i\t'%BuildingModel.XDirectionWoodPanelsBotTag[0,i])
+        tclfile.write('-dof\t1\treaction\n')
+        
+        tclfile.write('recorder\tNode\t-file\tZPanelBaseNodesHorizontalReactions.out\t-time\t-node\t')
+        for i in range(BuildingModel.numberOfZDirectionWoodPanels[0]):
+            tclfile.write('%i\t'%BuildingModel.ZDirectionWoodPanelsBotTag[0,i])
+        tclfile.write('-dof\t3\treaction\n')
+        
+        tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeXHorizontalReactions.out\t-time\t-node\t')
+        for i in range(numLeaningColumn):
+            tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
+        tclfile.write('-dof\t1\treaction\n')
+        
+        tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeZHorizontalReactions.out\t-time\t-node\t')
+        for i in range(numLeaningColumn):
+            tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
+        tclfile.write('-dof\t3\treaction\n')
 
-    numLeaningColumn = BuildingModel.leaningColumnNodesOpenSeesTags.shape[1]
+        if BuildingModel.XRetrofitFlag:
+            tclfile.write('# X-direction frame base node horizontal reactions\n')
+            tclfile.write('recorder\tNode\t-file\tOMFXHorizontalReactions.out\t-time\t-node\t')
+            for i in BuildingModel.XRetrofit:
+                for p,q in enumerate(i['JointCoor']):
+                    if q[1] == 0:
+                        tclfile.write('%i\t'%(i['JointOSLabel'][p]))
+            tclfile.write('-dof\t1\treaction\n')
 
-    if 'Dynamic' in AnalysisType:
-      tclfile.write('cd $pathToResults/EQ_$folderNumber/BaseReactions \n\n')
+        if BuildingModel.ZRetrofitFlag:
+            tclfile.write('# Z-direction frame base node horizontal reactions\n')
+            tclfile.write('recorder\tNode\t-file\tOMFZHorizontalReactions.out\t-time\t-node\t')
+            for i in BuildingModel.ZRetrofit:
+                for p,q in enumerate(i['JointCoor']):
+                    if q[1] == 0:
+                        tclfile.write('%i\t'%(i['JointOSLabel'][p]))
+            tclfile.write('-dof\t3\treaction\n')
 
-    elif 'Pushover' in AnalysisType:
-      tclfile.write('cd $baseDir/$dataDir/BaseReactions \n\n')
-
-    tclfile.write('# Base node vertical reactions \n')
-
-    tclfile.write('recorder\tNode\t-file\tXPanelBaseNodesVerticalReactions.out\t-time\t-node\t')
-    for i in range(BuildingModel.numberOfXDirectionWoodPanels[0]):
-      tclfile.write('%i\t'%BuildingModel.XDirectionWoodPanelsBotTag[0,i])
-    tclfile.write('-dof\t2\treaction\n')
-
-
-    tclfile.write('recorder\tNode\t-file\tZPanelBaseNodesVerticalReactions.out\t-time\t-node\t')
-    for i in range(BuildingModel.numberOfZDirectionWoodPanels[0]):
-      tclfile.write('%i\t'%BuildingModel.ZDirectionWoodPanelsBotTag[0,i])
-    tclfile.write('-dof\t2\treaction\n')
-
-    tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeVerticalReactions.out\t-time\t-node\t')
-    for i in range(numLeaningColumn):
-      tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
-    tclfile.write('-dof\t2\treaction\n')
-
-    tclfile.write('\n')
-
-    tclfile.write('# Base node horizontal reactions \n')
-
-    tclfile.write('recorder\tNode\t-file\tXPanelBaseNodesHorizontalReactions.out\t-time\t-node\t')
-    for i in range(BuildingModel.numberOfXDirectionWoodPanels[0]):
-      tclfile.write('%i\t'%BuildingModel.XDirectionWoodPanelsBotTag[0,i])
-    tclfile.write('-dof\t1\treaction\n')
-
-
-    tclfile.write('recorder\tNode\t-file\tZPanelBaseNodesHorizontalReactions.out\t-time\t-node\t')
-    for i in range(BuildingModel.numberOfZDirectionWoodPanels[0]):
-      tclfile.write('%i\t'%BuildingModel.ZDirectionWoodPanelsBotTag[0,i])
-    tclfile.write('-dof\t3\treaction\n')
-
-    tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeXHorizontalReactions.out\t-time\t-node\t')
-    for i in range(numLeaningColumn):
-      tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
-    tclfile.write('-dof\t1\treaction\n')
-
-    tclfile.write('recorder\tNode\t-file\tLeaningColumnBaseNodeZHorizontalReactions.out\t-time\t-node\t')
-    for i in range(numLeaningColumn):
-      tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[0,i])
-    tclfile.write('-dof\t3\treaction\n')
     
 def defineWoodPanelRecorders3DModel(ModelDirectory,BuildingModel,AnalysisType):
   os.chdir(ModelDirectory)
