@@ -19,6 +19,7 @@ set periodForRayleighDamping_2 *thirdModePeriod*;	# Mode 3 period - NEEDS to be 
 
 # Creating Output Directory
 file mkdir $dataDir;
+set GM_folder "*GM_folder_name*";
 
 # Initializing processor information
 set np [getNP]; # Getting the number of processors
@@ -47,7 +48,8 @@ for {set gm 1} {$gm <= $numberOfRunIDs} {incr gm} {
 
 # Setting up vector with number of steps per ground motion
 set groundMotionNumPoints {}; 
-set pathToTextFile $baseDir/GroundMotionInfo;
+# set pathToTextFile $baseDir/GroundMotionInfo;
+set pathToTextFile $GM_folder/GroundMotionInfo;
 set groundMotionNumPointsFile [open $pathToTextFile/GMNumPoints.txt r];
 while {[gets $groundMotionNumPointsFile line] >= 0} {
 	lappend groundMotionNumPoints $line;
@@ -64,6 +66,14 @@ while {[gets $groundMotionTimeStepFile line] >= 0} {
 close $groundMotionTimeStepFile;
 # puts "Ground motion time steps defined"
 
+# Setting up vector with names of ground motions
+set groundMotionFileNames {}; 
+set groundMotionFileNamesFile [open $pathToTextFile/GMFileNames.txt r];
+while {[gets $groundMotionFileNamesFile line] >= 0} {
+	lappend groundMotionFileNames $line;
+}
+close $groundMotionFileNamesFile;
+
 # Setting up vector with MCE scale factor for each ground motion pair
 set MCEScaleFactors {}; 
 set MCEScaleFactorsFile [open $pathToTextFile/BiDirectionMCEScaleFactors.txt r];
@@ -76,9 +86,40 @@ close $MCEScaleFactorsFile;
 # Ground motion scales to run
 set allScales {*AllScales*};
 
+# Set the single ground motion to run
+set Pairing *Pairing_ID*;
+set GMIDs *GM_pair_ID*;
+
+if {$Pairing == 1} {
+	set GM_XNumber [lindex $groundMotionXIDs $GMIDs];		
+	puts "*GM_XNumber : $GM_XNumber ";
+
+	set GM_ZNumber [lindex $groundMotionZIDs $GMIDs];
+	puts "*GM_ZNumber : $GM_ZNumber ";
+} else {
+	set GM_XNumber [lindex $groundMotionZIDs $GMIDs];		
+	puts "*GM_XNumber : $GM_XNumber ";
+
+	set GM_ZNumber [lindex $groundMotionXIDs $GMIDs];
+	puts "*GM_ZNumber : $GM_ZNumber ";
+}
+
+set GM_XFileName [format %s%s%s%s $GM_folder /histories/ [lindex $groundMotionFileNames [expr $GM_XNumber-1]] .txt];
+set GM_ZFileName [format %s%s%s%s $GM_folder /histories/ [lindex $groundMotionFileNames [expr $GM_ZNumber-1]] .txt];
+
+set GMX_FileName $GM_XFileName
+set GMZ_FileName $GM_ZFileName
+
+# Set output directory
+file mkdir SingleGM
+cd $baseDir/SingleGM
+file mkdir $GMIDs
+set pathToResults $baseDir/SingleGM/$GMIDs
+set pathToModel $baseDir
+
 set IDAStartT [clock seconds];
 
-# Looping over alll ground motions
+# Looping over all ground motions
 foreach runNumber $RunIDs {
 	if {[expr {$runNumber % $np}] == $pid} {
 		set groundMotionXNumber [lindex $groundMotionXIDs [expr $runNumber - 1]];

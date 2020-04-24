@@ -580,6 +580,7 @@ def defineDamping3DModel(ModelDirectory, BuildingModel, ModalPeriod):
       for j in range(numLeaningColumn):
         tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[i,j])
     tclfile.write('-rayleigh\t%s\t%i\t%i\t%i; \n'%('$alpha1', 0, 0, 0))
+    tclfile.write('puts "Damping defined"\n')
     
     
     

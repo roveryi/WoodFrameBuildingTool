@@ -14,3 +14,4 @@ set alpha2 [expr $alpha2Coeff*0.050]
 region 1 -eleRange	700000	700077	-rayleigh	0	$alpha2	0	0; 
 # Assign damping to nodes 
 region 2 -node	2000	2100	2200	2300	2400	2500	2600	2700	2800	3000	3100	3200	3300	3400	3500	3600	3700	3800	-rayleigh	$alpha1	0	0	0; 
+puts "Damping defined"

@@ -14,11 +14,12 @@ set dataDir Model
 append dataDir IDAOutputBiDirection;
 
 # Define the periods to use for the Rayleigh damping calculations
-set periodForRayleighDamping_1 *firstModePeriod*;	# Mode 1 period - NEEDS to be UPDATED
-set periodForRayleighDamping_2 *thirdModePeriod*;	# Mode 3 period - NEEDS to be UPDATED
+set periodForRayleighDamping_1 0.3579712230536529;	# Mode 1 period - NEEDS to be UPDATED
+set periodForRayleighDamping_2 0.24321995087410625;	# Mode 3 period - NEEDS to be UPDATED
 
 # Creating Output Directory
 file mkdir $dataDir;
+set GM_folder "C:/Users/User/Desktop/WoodFrameBuildingTool/Python Tool Win/BuildingModels/GM_sets/FEMA44-FarFault/"
 
 # Initializing processor information
 set np [getNP]; # Getting the number of processors
@@ -26,19 +27,19 @@ set pid [getPID]; # Getting the processor ID number
 
 # Setting up vector of ground motion ids
 set groundMotionXIDs {}; 
-set numberOfGroundMotionXIDs *NumberOfGroundMotions*; 
-for {set gm 2} {$gm <= [expr 2*$numberOfGroundMotionXIDs]} {incr gm 2} {
+set numberOfGroundMotionXIDs 22; 
+for {set gm 1} {$gm <= [expr 2*$numberOfGroundMotionXIDs]} {incr gm 2} {
 	lappend groundMotionXIDs $gm
 }
 
 set groundMotionZIDs {}; 
-set numberOfGroundMotionZIDs *NumberOfGroundMotions*; 
-for {set gm 1} {$gm <= [expr 2*$numberOfGroundMotionZIDs]} {incr gm 2} {
+set numberOfGroundMotionZIDs 22; 
+for {set gm 2} {$gm <= [expr 2*$numberOfGroundMotionZIDs]} {incr gm 2} {
 	lappend groundMotionZIDs $gm
 }
 
 set RunIDs {}; 
-set numberOfRunIDs *NumberOfGroundMotions*; 
+set numberOfRunIDs 1; 
 for {set gm 1} {$gm <= $numberOfRunIDs} {incr gm} {
 	lappend RunIDs $gm
 }
@@ -47,14 +48,15 @@ for {set gm 1} {$gm <= $numberOfRunIDs} {incr gm} {
 
 # Setting up vector with number of steps per ground motion
 set groundMotionNumPoints {}; 
-set pathToTextFile $baseDir/GroundMotionInfo;
+# set pathToTextFile $baseDir/GroundMotionInfo;
+set pathToTextFile $GM_folder/GroundMotionInfo
 set groundMotionNumPointsFile [open $pathToTextFile/GMNumPoints.txt r];
 while {[gets $groundMotionNumPointsFile line] >= 0} {
 	lappend groundMotionNumPoints $line;
 }
 close $groundMotionNumPointsFile;
 # puts "Ground motion number of steps defined"
-	
+
 # Setting up vector with size of time step for each ground motion
 set groundMotionTimeStep {}; 
 set groundMotionTimeStepFile [open $pathToTextFile/GMTimeSteps.txt r];
@@ -63,6 +65,14 @@ while {[gets $groundMotionTimeStepFile line] >= 0} {
 }
 close $groundMotionTimeStepFile;
 # puts "Ground motion time steps defined"
+
+# Setting up vector with names of ground motions
+set groundMotionFileNames {}; 
+set groundMotionFileNamesFile [open $pathToTextFile/GMFileNames.txt r];
+while {[gets $groundMotionFileNamesFile line] >= 0} {
+	lappend groundMotionFileNames $line;
+}
+close $groundMotionFileNamesFile;
 
 # Setting up vector with MCE scale factor for each ground motion pair
 set MCEScaleFactors {}; 
@@ -74,7 +84,39 @@ close $MCEScaleFactorsFile;
 # puts "MCE Scale Factors defined"
 
 # Ground motion scales to run
-set allScales {*AllScales*};
+set allScales {100};
+
+# Set the single ground motion to run
+set Pairing 1;
+set GMIDs 1;
+
+if {$Pairing == 1} {
+	set GM_XNumber [lindex $groundMotionXIDs $GMIDs];		
+	puts "*GM_XNumber : $GM_XNumber ";
+
+	set GM_ZNumber [lindex $groundMotionZIDs $GMIDs];
+	puts "*GM_ZNumber : $GM_ZNumber ";
+} else {
+	set GM_XNumber [lindex $groundMotionZIDs $GMIDs];		
+	puts "*GM_XNumber : $GM_XNumber ";
+
+	set GM_ZNumber [lindex $groundMotionXIDs $GMIDs];
+	puts "*GM_ZNumber : $GM_ZNumber ";
+}
+
+
+set GM_XFileName [format %s%s%s%s $GM_folder /histories/ [lindex $groundMotionFileNames [expr $GM_XNumber-1]] .txt];
+set GM_ZFileName [format %s%s%s%s $GM_folder /histories/ [lindex $groundMotionFileNames [expr $GM_ZNumber-1]] .txt];
+
+set GMX_FileName $GM_XFileName
+set GMZ_FileName $GM_ZFileName
+
+# Set output directory
+file mkdir SingleGM
+cd $baseDir/SingleGM
+file mkdir $GMIDs
+set pathToResults $baseDir/SingleGM/$GMIDs
+set pathToModel $baseDir
 
 set IDAStartT [clock seconds];
 
