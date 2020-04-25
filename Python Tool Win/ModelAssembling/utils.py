@@ -1857,3 +1857,34 @@ def SaveModelJason(BuildingModelClass, FileName):
 
     with open(FileName,'w') as file:
         json.dump(model_dict, file, indent = 2)
+
+        
+
+def SetupDyamaicAnalysis(ModelDirectory, Scale_Sa_GM, GM_Num, GM_ID, GM_set, Model_Name, PairingID):
+    '''
+    This function is used for set up dynamic analysis for running single ground motion nonlinear analysis, incremental dynamic analysis, run to collapse dynamic analysis locally. 
+    The function is based on RunDynamic.tcl. Make sure your model directory has this file.
+    Scale_Sa_GM: the median Sa values for each hazard level 
+    GM_Num: number of ground motion pairs in each hazard level (22 for FEMA Far Filed GM, 28 for FEMA Near Field GM)
+    GM_ID: the ground motion pair you want to analyze 
+    GM_set: specified ground motion folder 
+    Model_Name: the name of model for current run
+    PairinID: 1 or 2 the direction of applied ground motion 
+                1 - apply X ground motion to X direction of the building
+                2 - apply X ground motion to Z direction of the building
+    '''
+    os.chdir(ModelDirectory)
+    fin = open('RunDynamic.tcl', 'rt')
+    fout = open('RunDynamic_Single.tcl', 'wt')
+
+    filedata = fin.read()
+    filedata = filedata.replace('*Scale_Sa_GM*', Scale_Sa_GM)
+    filedata = filedata.replace('*GMset_Num*', GM_Num)
+    filedata = filedata.replace('*globalCounter*', str(GM_ID))
+    filedata = filedata.replace('*GM_Info*', GM_set)
+    filedata = filedata.replace('*ModelName*', Model_Name)
+    filedata = filedata.replace('*PairingID*', str(PairingID))
+
+    fout.write(filedata)
+    fin.close()
+    fout.close()

@@ -108,7 +108,7 @@ for {set i 0} {$i <= $Model_Num-1} {incr i} {
 	set groundMotionNumPoints {}; 
 
 
-	set pathToTextFile *pathToGMTextFile*;
+	set pathToTextFile $baseDir/*GM_Info*/$ScaleID1/GroundMotionInfo;
 
 
 	set groundMotionNumPointsFile [open $pathToTextFile/GMNumPoints.txt r];
