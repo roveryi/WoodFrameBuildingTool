@@ -1,9 +1,0 @@
-1£ºStucco + Gypsum Spring1
-2: Stucco + Gypsum Spring2
-3: Gypsum Wallboard Spring1
-4: Gypsum Wallboard Spring2
-5: Stucco + Horizontal Sheathing Spring 1
-6: Stucco + Horizontal Sheathing Spring 2
-7: Stucco + Horizontal Sheathing + WSP Spring 1
-8: Stucco + Horizontal Sheathing + WSP Spring 2
-

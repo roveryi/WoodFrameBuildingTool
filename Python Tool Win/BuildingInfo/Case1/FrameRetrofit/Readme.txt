@@ -1,2 +1,0 @@
-IndicateFrameXRetrofit.txt: enter "1" if this building is retrofitted with a moment-frame in the X-Direction and "0" if it's not.
-IndicateFrameZRetrofit.txt: enter "1" if this building is retrofitted with a moment-frame in the Z-Direction and "0" if it's not.

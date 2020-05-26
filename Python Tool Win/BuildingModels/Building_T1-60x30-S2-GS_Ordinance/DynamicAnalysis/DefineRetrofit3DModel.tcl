@@ -9,7 +9,7 @@ set	G	11500.0; # steel shear modulus
 set	n	10.0; # stiffness multiplier for rotational spring
 
 ## Define Moment Frame Damping Parameters
-set omegaI [expr (2.0 * $pi) / $periodForRayleighDamping_1];
+set omegaI [expr (2.0 * $pi) / ($periodForRayleighDamping_1)];
 set omegaJ [expr (2.0 * $pi) / ($periodForRayleighDamping_2)];
 set alpha1Coeff [expr (2.0 * $omegaI * $omegaJ) / ($omegaI + $omegaJ)];
 set alpha2Coeff [expr (2.0) / ($omegaI + $omegaJ)];
@@ -54,7 +54,7 @@ rigidDiaphragm	$perpDirn	2000	9122;
 #Define Moment Frame Beam Section Properties and Element
 set Abm	2.9600; # cross-section area 
 set Ibm	30.8000; # momment of inertia 
-set Ibm_mod	[expr $Ibm*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Ibm_mod	[expr $Ibm*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jbm	1000000.0; # inertia of tortion for beam, just assign a small number 
 set WBay	180.0000; # bay length 
 set Ks_bm	[expr $n*6.0*$Es*$Ibm_mod/$WBay]; # rotational stiffness of beam springs 
@@ -95,9 +95,9 @@ element elasticBeamColumn	81128122	8112	8122	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$XBeamL
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -105,18 +105,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -131,13 +131,13 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 rotSpring3DRotZModIKModel	16222	9111	7111	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 rotSpring3DRotZModIKModel	16242	9121	7121	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	71117112	7111	7112	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	71117112	7111	7112	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -145,18 +145,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -171,7 +171,7 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 rotSpring3DRotZModIKModel	16224	9112	7112	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 rotSpring3DRotZModIKModel	16244	9122	7122	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	71217122	7121	7122	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	71217122	7121	7122	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 region	10	-node	9111	9121	9112	9122	-rayleigh	$alpha1	0	$alpha2ToUse	0;
 region	20	-ele	81128122	71117112	71217122	-rayleigh	$alpha1	0	$alpha2ToUse	0;
@@ -205,7 +205,7 @@ rigidDiaphragm	$perpDirn	2000	9142;
 #Define Moment Frame Beam Section Properties and Element
 set Abm	2.9600; # cross-section area 
 set Ibm	30.8000; # momment of inertia 
-set Ibm_mod	[expr $Ibm*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Ibm_mod	[expr $Ibm*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jbm	1000000.0; # inertia of tortion for beam, just assign a small number 
 set WBay	180.0000; # bay length 
 set Ks_bm	[expr $n*6.0*$Es*$Ibm_mod/$WBay]; # rotational stiffness of beam springs 
@@ -246,9 +246,9 @@ element elasticBeamColumn	81328142	8132	8142	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$XBeamL
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -256,18 +256,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -282,13 +282,13 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 rotSpring3DRotZModIKModel	16262	9131	7131	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 rotSpring3DRotZModIKModel	16282	9141	7141	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	71317132	7131	7132	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	71317132	7131	7132	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -296,18 +296,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -322,7 +322,7 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 rotSpring3DRotZModIKModel	16264	9132	7132	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 rotSpring3DRotZModIKModel	16284	9142	7142	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	71417142	7141	7142	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	71417142	7141	7142	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 region	10	-node	9131	9141	9132	9142	-rayleigh	$alpha1	0	$alpha2ToUse	0;
 region	20	-ele	81328142	71317132	71417142	-rayleigh	$alpha1	0	$alpha2ToUse	0;
@@ -356,7 +356,7 @@ rigidDiaphragm	$perpDirn	2000	9222;
 #Define Moment Frame Beam Section Properties and Element
 set Abm	2.9600; # cross-section area 
 set Ibm	30.8000; # momment of inertia 
-set Ibm_mod	[expr $Ibm*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Ibm_mod	[expr $Ibm*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jbm	1000000.0; # inertia of tortion for beam, just assign a small number 
 set WBay	180.0000; # bay length 
 set Ks_bm	[expr $n*6.0*$Es*$Ibm_mod/$WBay]; # rotational stiffness of beam springs 
@@ -390,16 +390,16 @@ set b_bm	[expr ($a_bm)/(1.0+$n*(1.0-$a_bm))];
 
 #define beam springs
 #Spring ID: "8xya", where 8 = beam spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	17424	9212	8212	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
-rotSpring3DRotZModIKModel	17444	9222	8222	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotXModIKModel	17424	9212	8212	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
+rotSpring3DRotXModIKModel	17444	9222	8222	$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]	$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm	$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm	$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;
 #Define beams
 element elasticBeamColumn	82128222	8212	8222	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$ZBeamLinearTransf;
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -407,18 +407,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -430,16 +430,16 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	16422	9211	7211	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	16442	9221	7221	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotXModIKModel	16422	9211	7211	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotXModIKModel	16442	9221	7221	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	72117212	7211	7212	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	72117212	7211	7212	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 set Acol	4.4100; # cross-section area 
 set Icol	68.9000; # momment of inertia 
-set Icol_mod	[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam 
+set Icol_mod	[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam 
 set Jcol	1000000.0; # inertia of tortion for beam, just assign a small number 
-set HStory	180.0000; # column length 
+set HStory	111.0000; # column length 
 set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs 
 
 #define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure
@@ -447,18 +447,18 @@ set Ks_col	[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam s
 
 set My_col	848.0000; #yield moment
 set McMy_col	1.1100; 
-set LS_col	201.6033; 
-set LK_col	201.6033; 
+set LS_col	214.9913; 
+set LK_col	214.9913; 
 set LA_col	1000.0000; 
-set LD_col	201.6033; 
+set LD_col	214.9913; 
 set cS_col	1.00; 
 set cK_col	1.00; 
 set cA_col	1.00; 
 set cD_col	1.00; 
-set theta_pP_col	0.0435; 
-set theta_pN_col	0.0435; 
-set theta_pcP_col	0.1417; 
-set theta_pcN_col	0.1417; 
+set theta_pP_col	0.0451; 
+set theta_pN_col	0.0451; 
+set theta_pcP_col	0.1493; 
+set theta_pcN_col	0.1493; 
 set ResP_col	0.4000; 
 set ResN_col	0.4000; 
 set theta_uP_col	0.4000; 
@@ -470,10 +470,10 @@ set b_col	[expr ($a_col)/(1.0+$n*(1.0-$a_col))];
 
 #define column springs
 #Spring ID: "7xya", where 7 = column spring, x = Direction, y = Column Line, a = Floor, "x" convention: 5 = x Frame, 6 = z Frame
-rotSpring3DRotZModIKModel	16424	9212	7212	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
-rotSpring3DRotZModIKModel	16444	9222	7222	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotXModIKModel	16424	9212	7212	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
+rotSpring3DRotXModIKModel	16444	9222	7222	$Ks_col $b_col $b_col $My_col [expr -$My_col]	$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col	$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col	$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;
 #Define columns
-element elasticBeamColumn	72217222	7221	7222	 $Abm	$Es	$G	$Jbm	$Ibm	$Ibm	$PDeltaTransf;
+element elasticBeamColumn	72217222	7221	7222	 $Acol	$Es	$G	$Jcol	$Icol	$Icol	$PDeltaTransf;
 
 region	10	-node	9211	9221	9212	9222	-rayleigh	$alpha1	0	$alpha2ToUse	0;
 region	20	-ele	82128222	72117212	72217222	-rayleigh	$alpha1	0	$alpha2ToUse	0;
