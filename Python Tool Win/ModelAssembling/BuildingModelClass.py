@@ -62,7 +62,7 @@ class BuildingModel(object):
     ## Seismic Design Parameters   
       self.SeismicDesignParameter = None
 
-  def read_in_txt_inputs(self, CaseID, BaseDirectory, SeismicDesignParameterFlag = True):
+  def read_in_txt_inputs(self, CaseID, BaseDirectory, section_db, SeismicDesignParameterFlag = True):
       
       self.ID = CaseID
 ##################################################################################################
@@ -210,14 +210,14 @@ class BuildingModel(object):
       if self.XRetrofitFlag:
         os.chdir('XMomentFrames')
         self.NumXFrames = np.loadtxt('numberOfXFrames.txt')
-        self.XRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/XMomentFrames', self.NumXFrames)
+        self.XRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/XMomentFrames', self.NumXFrames, section_db)
       else: self.XRetrofit = None
 
       os.chdir(BaseDirectory + '/FrameRetrofit')
       if self.ZRetrofitFlag:
         os.chdir('ZMomentFrames')
         self.NumZFrames = np.loadtxt('numberOfZFrames.txt')
-        self.ZRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/ZMomentFrames', self.NumZFrames)
+        self.ZRetrofit = self.extractRetrofitFrameInfo(BaseDirectory + '/FrameRetrofit/ZMomentFrames', self.NumZFrames, section_db)
       else: self.ZRetrofit = None
           
 ##################################################################################################
@@ -482,7 +482,7 @@ class BuildingModel(object):
       Cvx = weight_floor_height/np.sum(weight_floor_height)
       return Cvx       
 
-  def extractRetrofitFrameInfo(self, FrameInfoDirectory, numFrames):
+  def extractRetrofitFrameInfo(self, FrameInfoDirectory, numFrames, section_db):
       FrameInfo = []
     
       for i in range(int(numFrames)):
@@ -499,31 +499,36 @@ class BuildingModel(object):
         with open('ColumnSection.txt','rb') as f:
             for line in f:
                 ColSection.append(line.decode().strip())
-        os.chdir(FrameInfoDirectory + '/Frame%i/Beams'%(i+1))  
-        BeamArea = np.loadtxt('A.txt').tolist()
-        BeamI = np.loadtxt('I.txt').tolist()
+        # os.chdir(FrameInfoDirectory + '/Frame%i/Beams'%(i+1))  
+        # BeamArea = np.loadtxt('A.txt').tolist()
+        # BeamI = np.loadtxt('I.txt').tolist()
+        BeamArea = [section_db.loc[section_db['AISC_Manual_Label'] == i, 'A'].values[0] for i in BeamSection]
+        BeamI = [section_db.loc[section_db['AISC_Manual_Label'] == i, 'Ix'].values[0] for i in BeamSection]
 
-        os.chdir(FrameInfoDirectory + '/Frame%i/BeamHinges'%(i+1))  
-        BeamHingeParam = {
-            'Lambda': np.loadtxt('lambda.txt').tolist(),
-            'McMy': 1.11,
-            'My': np.loadtxt('My.txt').tolist(),
-            'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
-            'theta_p': np.loadtxt('thetaCap.txt').tolist(),
-            'theta_u': 0.4
-        }
-        os.chdir(FrameInfoDirectory + '/Frame%i/Columns'%(i+1))  
-        ColumnArea = np.loadtxt('A.txt').tolist()
-        ColumnI = np.loadtxt('I.txt').tolist()
-        os.chdir(FrameInfoDirectory + '/Frame%i/ColumnHinges'%(i+1))  
-        ColumnHingeParam = {
-            'Lambda': np.loadtxt('lambda.txt').tolist(),
-            'McMy': 1.11,
-            'My': np.loadtxt('My.txt').tolist(),
-            'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
-            'theta_p': np.loadtxt('thetaCap.txt').tolist(),
-            'theta_u': 0.4
-        }
+        # os.chdir(FrameInfoDirectory + '/Frame%i/BeamHinges'%(i+1))  
+        # BeamHingeParam = {
+        #     'Lambda': np.loadtxt('lambda.txt').tolist(),
+        #     'McMy': 1.11,
+        #     'My': np.loadtxt('My.txt').tolist(),
+        #     'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
+        #     'theta_p': np.loadtxt('thetaCap.txt').tolist(),
+        #     'theta_u': 0.4
+        # }
+        # os.chdir(FrameInfoDirectory + '/Frame%i/Columns'%(i+1))  
+        # ColumnArea = np.loadtxt('A.txt').tolist()
+        # ColumnI = np.loadtxt('I.txt').tolist()
+        ColumnArea = [section_db.loc[section_db['AISC_Manual_Label'] == i, 'A'].values[0] for i in ColSection]
+        ColumnI = [section_db.loc[section_db['AISC_Manual_Label'] == i, 'Ix'].values[0] for i in ColSection]
+
+        # os.chdir(FrameInfoDirectory + '/Frame%i/ColumnHinges'%(i+1))  
+        # ColumnHingeParam = {
+        #     'Lambda': np.loadtxt('lambda.txt').tolist(),
+        #     'McMy': 1.11,
+        #     'My': np.loadtxt('My.txt').tolist(),
+        #     'theta_pc': np.loadtxt('thetaPC.txt').tolist(),
+        #     'theta_p': np.loadtxt('thetaCap.txt').tolist(),
+        #     'theta_u': 0.4
+        # }
 
         os.chdir(FrameInfoDirectory + '/Frame%i/FrameNodes'%(i+1))
         BeamHingeCoor = np.loadtxt('BeamHingeNodeCoordinates.txt').tolist()
@@ -537,10 +542,10 @@ class BuildingModel(object):
                           'ColSection': ColSection,
                           'BeamArea': BeamArea,
                           'BeamI':BeamI,
-                          'BeamHingeParameter': BeamHingeParam,
+                          'BeamHingeParameter': None,
                           'ColumnArea': ColumnArea,
                           'ColumnI': ColumnI,
-                          'ColumnHingeParameter': ColumnHingeParam,
+                          'ColumnHingeParameter': None,
                           'BeamHingeCoor': BeamHingeCoor,
                           'BeamHingeOSLabel': BeamHingeOSLabel,
                           'ColHingeCoor': ColHingeCoor,

@@ -1566,7 +1566,7 @@ def defineMomentFrame3DModel(ModelDirectory, BuildingModel, DB_Directory):
 		tclfile.write('set\tG\t11500.0; # steel shear modulus\n')
 		tclfile.write('set\tn\t10.0; # stiffness multiplier for rotational spring\n\n')
 		tclfile.write('## Define Moment Frame Damping Parameters\n')
-		tclfile.write('set omegaI [expr (2.0 * $pi) / $periodForRayleighDamping_1];\n')
+		tclfile.write('set omegaI [expr (2.0 * $pi) / ($periodForRayleighDamping_1)];\n')
 		tclfile.write('set omegaJ [expr (2.0 * $pi) / ($periodForRayleighDamping_2)];\n')
 		tclfile.write('set alpha1Coeff [expr (2.0 * $omegaI * $omegaJ) / ($omegaI + $omegaJ)];\n')
 		tclfile.write('set alpha2Coeff [expr (2.0) / ($omegaI + $omegaJ)];\n')
@@ -1643,7 +1643,7 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
 
         tclfile.write('set Abm\t%.4f; # cross-section area \n'%Abm)
         tclfile.write('set Ibm\t%.4f; # momment of inertia \n'%Ibm)
-        tclfile.write('set Ibm_mod\t[expr $Ibm*($n + 1.0/$n)]; # modified moment of inertia for beam \n')
+        tclfile.write('set Ibm_mod\t[expr $Ibm*($n+1.0)/$n]; # modified moment of inertia for beam \n')
         tclfile.write('set Jbm\t1000000.0; # inertia of tortion for beam, just assign a small number \n')
         tclfile.write('set WBay\t%.4f; # bay length \n'%compute3DDistance(FrameDict['BeamHingeCoor']))
         tclfile.write('set Ks_bm\t[expr $n*6.0*$Es*$Ibm_mod/$WBay]; # rotational stiffness of beam springs \n\n')
@@ -1685,7 +1685,10 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
 
         for i, j in zip(FrameDict['BeamHingeCoor'], FrameDict['BeamHingeOSLabel']):
             BeamNodeLabel = FrameDict['JointOSLabel'][FrameDict['JointCoor'].index(i)]
-            tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]\t$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm\t$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm\t$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;\n'%(BeamNodeLabel+j, BeamNodeLabel, j))
+            if Direction == 'x':
+              tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]\t$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm\t$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm\t$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;\n'%(BeamNodeLabel+j, BeamNodeLabel, j))
+            elif Direction == 'z':
+              tclfile.write('rotSpring3DRotXModIKModel\t%i\t%i\t%i\t$Ks_bm $b_bm $b_bm $My_bm [expr -$My_bm]\t$LS_bm $LK_bm $LA_bm $LD_bm $cS_bm $cK_bm $cA_bm $cD_bm\t$theta_pP_bm $theta_pN_bm $theta_pcP_bm $theta_pcN_bm\t$ResP_bm $ResN_bm $theta_uP_bm $theta_uN_bm $DP_bm $DN_bm;\n'%(BeamNodeLabel+j, BeamNodeLabel, j))
 
         tclfile.write('#Define beams\n')
         if Direction == 'x':
@@ -1698,7 +1701,7 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
     for i in range(len(FrameDict['ColSection'])):
         if DBFlag: 
             s_info = extractSectionInfo(FrameDict['ColSection'][i], section_db)
-            s_info['unbraced_length'] = compute3DDistance(FrameDict['ColHingeCoor'][2*i:2*(i+1)])
+            s_info['unbraced_length'] = ModelClass.storyHeights[0]
             Acol, Icol = s_info['A'], s_info['Ix'] # Section information 
             hinge_param = calculateHingeParameters(s_info) # Compute hinge parameters
             FrameDict['ColumnHingeParameter'] = hinge_param
@@ -1708,9 +1711,9 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
 
         tclfile.write('set Acol\t%.4f; # cross-section area \n'%Acol)
         tclfile.write('set Icol\t%.4f; # momment of inertia \n'%Icol)
-        tclfile.write('set Icol_mod\t[expr $Icol*($n + 1.0/$n)]; # modified moment of inertia for beam \n')
+        tclfile.write('set Icol_mod\t[expr $Icol*($n+1.0)/$n]; # modified moment of inertia for beam \n')
         tclfile.write('set Jcol\t1000000.0; # inertia of tortion for beam, just assign a small number \n')
-        tclfile.write('set HStory\t%.4f; # column length \n'%compute3DDistance(FrameDict['ColHingeCoor'][2*i:2*(i+1)]))
+        tclfile.write('set HStory\t%.4f; # column length \n'%ModelClass.storyHeights[0])
         tclfile.write('set Ks_col\t[expr $n*6.0*$Es*$Icol_mod/$HStory]; # rotational stiffness of beam springs \n\n')
 
         tclfile.write('#define rotational spring properties and create spring elements using "rotSpring3DModIKModel" procedure\n')
@@ -1750,10 +1753,13 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
 
         for p, q in zip(FrameDict['ColHingeCoor'][2*i:2*(i+1)], FrameDict['ColHingeOSLabel'][2*i:2*(i+1)]):
             ColNodeLabel = FrameDict['JointOSLabel'][FrameDict['JointCoor'].index(p)]
-            tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_col $b_col $b_col $My_col [expr -$My_col]\t$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col\t$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col\t$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;\n'%(ColNodeLabel+q, ColNodeLabel, q))
+            if Direction == 'x':
+              tclfile.write('rotSpring3DRotZModIKModel\t%i\t%i\t%i\t$Ks_col $b_col $b_col $My_col [expr -$My_col]\t$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col\t$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col\t$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;\n'%(ColNodeLabel+q, ColNodeLabel, q))
+            elif Direction == 'z':
+              tclfile.write('rotSpring3DRotXModIKModel\t%i\t%i\t%i\t$Ks_col $b_col $b_col $My_col [expr -$My_col]\t$LS_col $LK_col $LA_col $LD_col $cS_col $cK_col $cA_col $cD_col\t$theta_pP_col $theta_pN_col $theta_pcP_col $theta_pcN_col\t$ResP_col $ResN_col $theta_uP_col $theta_uN_col $DP_col $DN_col;\n'%(ColNodeLabel+q, ColNodeLabel, q))
 
         tclfile.write('#Define columns\n')
-        tclfile.write('element elasticBeamColumn\t%s\t%i\t%i\t $Abm\t$Es\t$G\t$Jbm\t$Ibm\t$Ibm\t$PDeltaTransf;\n\n'%(str(int(FrameDict['ColHingeOSLabel'][i]))+str(int(FrameDict['ColHingeOSLabel'][i+2])), FrameDict['ColHingeOSLabel'][i],FrameDict['ColHingeOSLabel'][i+2]))   
+        tclfile.write('element elasticBeamColumn\t%s\t%i\t%i\t $Acol\t$Es\t$G\t$Jcol\t$Icol\t$Icol\t$PDeltaTransf;\n\n'%(str(int(FrameDict['ColHingeOSLabel'][i]))+str(int(FrameDict['ColHingeOSLabel'][i+2])), FrameDict['ColHingeOSLabel'][i],FrameDict['ColHingeOSLabel'][i+2]))   
         ComponentID.append(str(int(FrameDict['ColHingeOSLabel'][i]))+str(int(FrameDict['ColHingeOSLabel'][i+2])))
 
     tclfile.write('region\t10\t-node\t')
