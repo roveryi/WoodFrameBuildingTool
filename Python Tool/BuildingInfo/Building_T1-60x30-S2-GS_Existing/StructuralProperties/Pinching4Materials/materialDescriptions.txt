@@ -1,0 +1,7 @@
+1: Stucco
+2: Gypsum Wallboard
+3: Stucco + Gypsum, only used for exterior wall, directly use this value instead of Stucco + Gypsum parallel
+4: HWS
+5: WSP 10d@2'' O.C (used for IEBC and FEMA retrofit)
+6: WSP 10d@4'' O.C (used for IEBC and FEMA retrofit)
+

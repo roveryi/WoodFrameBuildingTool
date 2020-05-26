@@ -2,7 +2,8 @@ import numpy as np
 import os 
 import pandas as pd
 import json
-
+from distutils.dir_util import copy_tree
+from win32api import ShellExecute
 
 def defineNodes3DModel(ModelDirectory, BuildingModel):
   
@@ -579,6 +580,7 @@ def defineDamping3DModel(ModelDirectory, BuildingModel, ModalPeriod):
       for j in range(numLeaningColumn):
         tclfile.write('%i\t'%BuildingModel.leaningColumnNodesOpenSeesTags[i,j])
     tclfile.write('-rayleigh\t%s\t%i\t%i\t%i; \n'%('$alpha1', 0, 0, 0))
+    tclfile.write('puts "Damping defined"\n')
     
     
     
@@ -726,6 +728,7 @@ def defineBaseReactionRecorders3DModel(ModelDirectory,BuildingModel,AnalysisType
                     if q[1] == 0:
                         tclfile.write('%i\t'%(i['JointOSLabel'][p]))
             tclfile.write('-dof\t3\treaction\n')
+
     
 def defineWoodPanelRecorders3DModel(ModelDirectory,BuildingModel,AnalysisType):
   os.chdir(ModelDirectory)
@@ -1078,9 +1081,9 @@ def defineMasses3DModel(ModelDirectory, BuildingModel):
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2)))
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2)))
           tclfile.write('\n')
           
 def defineDynamicAnalysisParameters3DModel(ModelDirectory, BuildingModel):
@@ -1435,7 +1438,7 @@ def define3DDynamicAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Define all recorders\n')
     tclfile.write('source DefineAllRecorders3DModel.tcl\n\n')
 
-def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, NumModes = 4, GenerateModelSwitch = True):
+def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory, NumModes = 4, GenerateModelSwitch = True):
     ModelDirectory = BaseDirectory + '/BuildingModels/%s'%ID
     if os.path.isdir(ModelDirectory + '/EigenValueAnalysis') != True:
         os.chdir(ModelDirectory)
@@ -1463,7 +1466,7 @@ def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, NumModes = 4, G
         define3DEigenValueAnalysisModel(ModelDirectory + '/EigenValueAnalysis', BuildingModel)
 
         os.system("cd %s/EigenValueAnalysis"%ModelDirectory)
-        #!OpenSees Model.tcl
+        os.system('OpenSees Model.tcl')
     
     with open(ModelDirectory + '/EigenValueAnalysis/Analysis_Results/Modes/periods.out', 'r') as f:
         temp = f.read() 
@@ -1472,7 +1475,7 @@ def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, NumModes = 4, G
 
     return periods
 
-def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, GenerateModelSwitch = True, RunPushoverSwitch = False):
+def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory, GenerateModelSwitch = True, RunPushoverSwitch = False):
     ModelDirectory = BaseDirectory + '/BuildingModels/%s'%ID
     if os.path.isdir(ModelDirectory + '/PushoverAnalysis') != True:
         os.chdir(ModelDirectory)
@@ -1496,7 +1499,6 @@ def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, GenerateMode
         defineMasses3DModel(ModelDirectory + '/PushoverAnalysis', BuildingModel)
         if BuildingModel.XRetrofitFlag or BuildingModel.ZRetrofitFlag:
             defineMomentFrame3DModel(ModelDirectory + '/PushoverAnalysis', BuildingModel, DB_Directory)
-        
         defineBaseReactionRecorders3DModel(ModelDirectory + '/PushoverAnalysis', BuildingModel, 'Pushover')
         defineWoodPanelRecorders3DModel(ModelDirectory + '/PushoverAnalysis', BuildingModel, 'Pushover')
         defineNodeDisplacementRecorders3DModel(ModelDirectory + '/PushoverAnalysis', BuildingModel, 'Pushover')
@@ -1508,12 +1510,12 @@ def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, GenerateMode
         
     if RunPushoverSwitch:
         os.system("cd %s/PushoverAnalysis"%ModelDirectory)
-        #!OpenSees RunXPushoverAnalysis.tcl
-        #!OpenSees RunZPushoverAnalysis.tcl
+        os.system('OpenSees RunXPushoverAnalysis.tcl')
+        os.system('OpenSees RunZPushoverAnalysis.tcl')
         
         
 
-def generateDynamicAnalysisModel(ID, BuildingModel, BaseDirectory, ModalPeriod, GenerateModelSwitch = True):
+def generateDynamicAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory, ModalPeriod, GenerateModelSwitch = True):
     ModelDirectory = BaseDirectory + '/BuildingModels/%s'%ID
     if os.path.isdir(ModelDirectory + '/DynamicAnalysis') != True:
         os.chdir(ModelDirectory)
@@ -1549,42 +1551,42 @@ def generateDynamicAnalysisModel(ID, BuildingModel, BaseDirectory, ModalPeriod, 
         define3DDynamicAnalysisModel(ModelDirectory + '/DynamicAnalysis', BuildingModel)
         
 
-def defineMomentFrame3DModel(ModelDirectory, BuildingModel, DBDirectory):
-    os.chdir(DBDirectory)
-    section_db = pd.read_csv('Database.csv',encoding = "ISO-8859-1")
+def defineMomentFrame3DModel(ModelDirectory, BuildingModel, DB_Directory):
+	os.chdir(DB_Directory)
+	section_db = pd.read_csv('Database.csv',encoding = "ISO-8859-1")
 
-    os.chdir(ModelDirectory)
-    with open('DefineRetrofit3DModel.tcl','w') as tclfile:
-        tclfile.write('## Define Beam Section Properties and Element\n')
-        tclfile.write('# These number can be modified regarding convergence issues]\n')
-        tclfile.write('uniaxialMaterial Elastic\t99999\t1e-8;\n')
-        tclfile.write('uniaxialMaterial Elastic\t199999\t1e8;\n\n')
-        tclfile.write('# Define Material Properties\n')
-        tclfile.write('set\tEs\t29000.0; #steel Young modulus\n')
-        tclfile.write('set\tG\t11500.0; # steel shear modulus\n')
-        tclfile.write('set\tn\t10.0; # stiffness multiplier for rotational spring\n\n')
-        tclfile.write('## Define Moment Frame Damping Parameters\n')
-        tclfile.write('set omegaI [expr (2.0 * $pi) / $periodForRayleighDamping_1];\n')
-        tclfile.write('set omegaJ [expr (2.0 * $pi) / ($periodForRayleighDamping_2)];\n')
-        tclfile.write('set alpha1Coeff [expr (2.0 * $omegaI * $omegaJ) / ($omegaI + $omegaJ)];\n')
-        tclfile.write('set alpha2Coeff [expr (2.0) / ($omegaI + $omegaJ)];\n')
-        tclfile.write('set alpha1  [expr $alpha1Coeff*0.02];\n')
-        tclfile.write('set alpha2  [expr $alpha2Coeff*0.02];\n')
-        tclfile.write('set alpha2ToUse [expr 1.1 * $alpha2];  # 1.1 factor is becuase we apply to only LE elements\n\n')
+	os.chdir(ModelDirectory)
+	with open('DefineRetrofit3DModel.tcl','w') as tclfile:
+		tclfile.write('## Define Beam Section Properties and Element\n')
+		tclfile.write('# These number can be modified regarding convergence issues]\n')
+		tclfile.write('uniaxialMaterial Elastic\t99999\t1e-8;\n')
+		tclfile.write('uniaxialMaterial Elastic\t199999\t1e8;\n\n')
+		tclfile.write('# Define Material Properties\n')
+		tclfile.write('set\tEs\t29000.0; #steel Young modulus\n')
+		tclfile.write('set\tG\t11500.0; # steel shear modulus\n')
+		tclfile.write('set\tn\t10.0; # stiffness multiplier for rotational spring\n\n')
+		tclfile.write('## Define Moment Frame Damping Parameters\n')
+		tclfile.write('set omegaI [expr (2.0 * $pi) / $periodForRayleighDamping_1];\n')
+		tclfile.write('set omegaJ [expr (2.0 * $pi) / ($periodForRayleighDamping_2)];\n')
+		tclfile.write('set alpha1Coeff [expr (2.0 * $omegaI * $omegaJ) / ($omegaI + $omegaJ)];\n')
+		tclfile.write('set alpha2Coeff [expr (2.0) / ($omegaI + $omegaJ)];\n')
+		tclfile.write('set alpha1  [expr $alpha1Coeff*0.02];\n')
+		tclfile.write('set alpha2  [expr $alpha2Coeff*0.02];\n')
+		tclfile.write('set alpha2ToUse [expr 1.1 * $alpha2];  # 1.1 factor is becuase we apply to only LE elements\n\n')
 
-        tclfile.write('#Define Geometric Transformations\n')
-        tclfile.write('set XBeamLinearTransf 4;\n')
-        tclfile.write('geomTransf Linear $XBeamLinearTransf\t0\t0\t1;\n\n')
-        tclfile.write('set ZBeamLinearTransf 3;\n')
-        tclfile.write('geomTransf Linear $ZBeamLinearTransf\t1\t0\t0;\n\n')       
+		tclfile.write('#Define Geometric Transformations\n')
+		tclfile.write('set XBeamLinearTransf 4;\n')
+		tclfile.write('geomTransf Linear $XBeamLinearTransf\t0\t0\t1;\n\n')
+		tclfile.write('set ZBeamLinearTransf 3;\n')
+		tclfile.write('geomTransf Linear $ZBeamLinearTransf\t1\t0\t0;\n\n')       
 
-        if BuildingModel.XRetrofit:
-            for i in BuildingModel.XRetrofit:
-                writeSingleFrameInfo(tclfile, BuildingModel, i, 'x', section_db, True)
-        
-        if BuildingModel.ZRetrofit:
-            for i in BuildingModel.ZRetrofit:
-                writeSingleFrameInfo(tclfile, BuildingModel, i, 'z', section_db, True)
+		if BuildingModel.XRetrofit:
+			for i in BuildingModel.XRetrofit:
+				writeSingleFrameInfo(tclfile, BuildingModel, i, 'x', section_db, True)
+
+		if BuildingModel.ZRetrofit:
+			for i in BuildingModel.ZRetrofit:
+				writeSingleFrameInfo(tclfile, BuildingModel, i, 'z', section_db, True)
 
 
 
@@ -1766,15 +1768,15 @@ def writeSingleFrameInfo(tclfile, ModelClass, FrameDict, Direction, section_db, 
 ###########################################
 
 def extractSectionInfo(Section, DB):
-    output = {'A': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'A'].values[0]),
-    'd': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'd'].values[0]),
-    'tf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tf'].values[0]),
-    'Ix': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Ix'].values[0]),
-    'Zx': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Zx'].values[0]),
-    'tw': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tw'].values[0]),
-    'bf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'bf'].values[0]),
-    'ry': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'ry'].values[0])}
-    return output
+	output = {'A': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'A'].values[0]),
+	'd': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'd'].values[0]),
+	'tf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tf'].values[0]),
+	'Ix': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Ix'].values[0]),
+	'Zx': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'Zx'].values[0]),
+	'tw': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'tw'].values[0]),
+	'bf': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'bf'].values[0]),
+	'ry': float(DB.loc[DB['AISC_Manual_Label'] == Section, 'ry'].values[0])}
+	return output
      
 def calculateHingeParameters(section):
         """
@@ -1855,3 +1857,34 @@ def SaveModelJason(BuildingModelClass, FileName):
 
     with open(FileName,'w') as file:
         json.dump(model_dict, file, indent = 2)
+
+        
+
+def SetupDyamaicAnalysis(ModelDirectory, Scale_Sa_GM, GM_Num, GM_ID, GM_set, Model_Name, PairingID):
+    '''
+    This function is used for set up dynamic analysis for running single ground motion nonlinear analysis, incremental dynamic analysis, run to collapse dynamic analysis locally. 
+    The function is based on RunDynamic.tcl. Make sure your model directory has this file.
+    Scale_Sa_GM: the median Sa values for each hazard level 
+    GM_Num: number of ground motion pairs in each hazard level (22 for FEMA Far Filed GM, 28 for FEMA Near Field GM)
+    GM_ID: the ground motion pair you want to analyze 
+    GM_set: specified ground motion folder 
+    Model_Name: the name of model for current run
+    PairinID: 1 or 2 the direction of applied ground motion 
+                1 - apply X ground motion to X direction of the building
+                2 - apply X ground motion to Z direction of the building
+    '''
+    os.chdir(ModelDirectory)
+    fin = open('RunDynamic.tcl', 'rt')
+    fout = open('RunDynamic_Single.tcl', 'wt')
+
+    filedata = fin.read()
+    filedata = filedata.replace('*Scale_Sa_GM*', Scale_Sa_GM)
+    filedata = filedata.replace('*GMset_Num*', GM_Num)
+    filedata = filedata.replace('*globalCounter*', str(GM_ID))
+    filedata = filedata.replace('*GM_Info*', GM_set)
+    filedata = filedata.replace('*ModelName*', Model_Name)
+    filedata = filedata.replace('*PairingID*', str(PairingID))
+
+    fout.write(filedata)
+    fin.close()
+    fout.close()

@@ -1081,9 +1081,9 @@ def defineMasses3DModel(ModelDirectory, BuildingModel):
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
                                                              BuildingModel.leaningcolumnLoads[i,j]/g,
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
-                                                             BuildingModel.leaningcolumnLoads[i,j]/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2)))
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2),
+                                                             BuildingModel.leaningcolumnLoads[i,j]/12/g*((BuildingModel.floorMaximumXDimension[i+1]/2)**2 + (BuildingModel.floorMaximumZDimension[i+1]/2)**2)))
           tclfile.write('\n')
           
 def defineDynamicAnalysisParameters3DModel(ModelDirectory, BuildingModel):
