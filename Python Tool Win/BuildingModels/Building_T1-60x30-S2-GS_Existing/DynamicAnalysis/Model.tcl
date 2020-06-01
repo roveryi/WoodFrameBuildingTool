@@ -34,6 +34,9 @@ source DefineMasses3DModel.tcl
 # Define gravity loads 
 source DefineGravityLoads3DModel.tcl
 
+# Define all recorders
+source DefineAllRecorders3DModel.tcl
+
 # Perform gravity analysis 
 source PerformGravityAnalysis.tcl
 
@@ -45,7 +48,4 @@ set scalefactor [expr $g*100/100*$MCE_SF];
 
 # Run time history 
 source DefineBiDirectionalTimeHistory.tcl 
-
-# Define all recorders
-source DefineAllRecorders3DModel.tcl
 

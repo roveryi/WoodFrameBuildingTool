@@ -1423,6 +1423,9 @@ def define3DDynamicAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Define gravity loads \n')
     tclfile.write('source DefineGravityLoads3DModel.tcl\n\n')
 
+    tclfile.write('# Define all recorders\n')
+    tclfile.write('source DefineAllRecorders3DModel.tcl\n\n')
+
     tclfile.write('# Perform gravity analysis \n')
     tclfile.write('source PerformGravityAnalysis.tcl\n\n')
 
@@ -1435,8 +1438,7 @@ def define3DDynamicAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('# Run time history \n')
     tclfile.write('source DefineBiDirectionalTimeHistory.tcl \n\n')
 
-    tclfile.write('# Define all recorders\n')
-    tclfile.write('source DefineAllRecorders3DModel.tcl\n\n')
+    
 
 def generateModalAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory, NumModes = 4, GenerateModelSwitch = True):
     ModelDirectory = BaseDirectory + '/BuildingModels/%s'%ID
