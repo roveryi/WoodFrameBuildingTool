@@ -1561,8 +1561,8 @@ def defineMomentFrame3DModel(ModelDirectory, BuildingModel, DB_Directory):
 	with open('DefineRetrofit3DModel.tcl','w') as tclfile:
 		tclfile.write('## Define Beam Section Properties and Element\n')
 		tclfile.write('# These number can be modified regarding convergence issues]\n')
-		tclfile.write('uniaxialMaterial Elastic\t99999\t1e-8;\n')
-		tclfile.write('uniaxialMaterial Elastic\t199999\t1e8;\n\n')
+		tclfile.write('uniaxialMaterial Elastic\t99999\t1e-6;\n')
+		tclfile.write('uniaxialMaterial Elastic\t199999\t1e6;\n\n')
 		tclfile.write('# Define Material Properties\n')
 		tclfile.write('set\tEs\t29000.0; #steel Young modulus\n')
 		tclfile.write('set\tG\t11500.0; # steel shear modulus\n')
