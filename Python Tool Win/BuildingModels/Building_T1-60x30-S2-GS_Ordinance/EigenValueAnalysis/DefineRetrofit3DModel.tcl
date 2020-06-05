@@ -1,7 +1,7 @@
 ## Define Beam Section Properties and Element
 # These number can be modified regarding convergence issues]
-uniaxialMaterial Elastic	99999	1e-8;
-uniaxialMaterial Elastic	199999	1e8;
+uniaxialMaterial Elastic	99999	1e-6;
+uniaxialMaterial Elastic	199999	1e6;
 
 # Define Material Properties
 set	Es	29000.0; #steel Young modulus

@@ -38,7 +38,7 @@ source DefineMasses3DModel.tcl
 source DefineGravityLoads3DModel.tcl
 
 # Define all recorders
-source DefineAllRecorders3DModel.tcl
+# source DefineAllRecorders3DModel.tcl
 
 # Perform gravity analysis 
 source PerformGravityAnalysis.tcl

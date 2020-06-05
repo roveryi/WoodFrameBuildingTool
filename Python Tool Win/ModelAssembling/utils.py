@@ -1424,7 +1424,7 @@ def define3DDynamicAnalysisModel(ModelDirectory, BuildingModel):
     tclfile.write('source DefineGravityLoads3DModel.tcl\n\n')
 
     tclfile.write('# Define all recorders\n')
-    tclfile.write('source DefineAllRecorders3DModel.tcl\n\n')
+    tclfile.write('# source DefineAllRecorders3DModel.tcl\n\n')
 
     tclfile.write('# Perform gravity analysis \n')
     tclfile.write('source PerformGravityAnalysis.tcl\n\n')
