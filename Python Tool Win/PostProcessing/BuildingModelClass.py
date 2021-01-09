@@ -27,7 +27,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
 # Import functions
-from ExtractMaxEDP import ExtractPeriod
 from ExtractMaxEDP import ExtractSDR
 from ExtractMaxEDP import ExtractRDR
 from ExtractMaxEDP import ExtractPGA
@@ -37,7 +36,7 @@ from ExtractMaxEDP import lognormfit
 from ExtractMaxEDP import neg_loglik
 from ExtractMaxEDP import squareerror 
 
-from LossAssessment import performLossAssessment
+# from LossAssessment import performLossAssessment
 
 # In[16]:
 
@@ -49,8 +48,8 @@ class BuildingModel(object):
         self.BaseDirectory = BaseDirectory
         
         # Directory info
-        DynamicDirectory = BaseDirectory + ID + '/OpenSees3DModels/DynamicAnalysis/'
-        EigenDirectory = BaseDirectory + ID + '/OpenSees3DModels/EigenValueAnalysis/'
+        DynamicDirectory = BaseDirectory + CaseID + '/'
+        # EigenDirectory = BaseDirectory + ID + '/OpenSees3DModels/EigenValueAnalysis/'
         GMDirectory = BaseDirectory + 'GM_Info'
 
         self.HazardLevel = HazardLevel

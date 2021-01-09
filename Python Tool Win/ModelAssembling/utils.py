@@ -96,6 +96,7 @@ def defineNodes3DModel(ModelDirectory, BuildingModel):
       
 def defineRigidFloorDiaphragm3DModel(ModelDirectory, BuildingModel):
   os.chdir(ModelDirectory)
+  CENTRAL_LENING_COLUMN = 4
   
   with open('DefineRigidFloorDiaphragm3DModel.tcl', 'w') as tclfile:
     
@@ -111,8 +112,10 @@ def defineRigidFloorDiaphragm3DModel(ModelDirectory, BuildingModel):
       tclfile.write('rigidDiaphragm $perpDirn')
 
       # Leaning column top nodes of story i
+      tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, 4])
       for ii in range(BuildingModel.leaningColumnNodesOpenSeesTags.shape[1]):
-        tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, ii])
+        if ii != 4:
+          tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, ii])
 
       # All top nodes of story i
       for j in range(BuildingModel.numberOfXDirectionWoodPanels[i-1]):
@@ -807,8 +810,8 @@ def defineNodeAccelerationRecorders3DModel(ModelDirectory, BuildingModel):
 
     for i in range(BuildingModel.numberOfStories):
       # Current script only record the central leaning column absolute acceleration 
-      tclfile.write('recorder\tNode\t-file\tLeaningColumnNodeXAbsoAccLevel%i.out\t-timeSeries\t11\t-time\t-node\t%i\t-dof\t1\taccel\n'%(i+2,BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0]))
-      tclfile.write('recorder\tNode\t-file\tLeaningColumnNodeZAbsoAccLevel%i.out\t-timeSeries\t12\t-time\t-node\t%i\t-dof\t3\taccel\n'%(i+2,BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0]))
+      tclfile.write('recorder\tEnvelopeNode\t-file\tLeaningColumnNodeXAbsoAccLevel%i.out\t-timeSeries\t11\t-time\t-node\t%i\t-dof\t1\taccel\n'%(i+2,BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4]))
+      tclfile.write('recorder\tEnvelopeNode\t-file\tLeaningColumnNodeZAbsoAccLevel%i.out\t-timeSeries\t12\t-time\t-node\t%i\t-dof\t3\taccel\n'%(i+2,BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4]))
 
       
 def defineNodeDisplacementRecorders3DModel(ModelDirectory, BuildingModel, AnalysisType):
@@ -885,95 +888,95 @@ def defineStoryDriftRecorders3DModel(ModelDirectory,BuildingModel,AnalysisType):
     if 'Dynamic' in AnalysisType:
       tclfile.write('cd $pathToResults/EQ_$folderNumber/StoryDrifts \n')
       tclfile.write('# Define x-direction story drift recorders \n')
-      tclfile.write('recorder\tDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/MidLeaningColumnXDrift.out\t-time\t-iNode\t')
+      tclfile.write('recorder\tEnvelopeDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/MidLeaningColumnXDrift.out\t-time\t-iNode\t')
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [0,2,7]:
+        for j in [1,4,7]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i,j]))
 
-      for j in [0,2,7]:
+      for j in [1,4,7]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[0,j]))
 
       tclfile.write('-jNode\t')
 
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [0,2,7]:
+        for j in [1,4,7]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,j]))
 
-      for j in [0,2,7]:
+      for j in [1,4,7]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[-1,j])) 
 
       tclfile.write('-dof\t1\t-perpDirn\t2\n')
 
-      tclfile.write('recorder\tDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/CornerLeaningColumnXDrift.out\t-time\t-iNode\t')
+      tclfile.write('recorder\tEnvelopeDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/CornerLeaningColumnXDrift.out\t-time\t-iNode\t')
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [1,3,6,8]:
+        for j in [0,2,6,8]:
           # Remember to put the central leaning column at the very beginåning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i,j]))
 
-      for j in [1,3,6,8]:
+      for j in [0,2,6,8]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[0,j]))
 
       tclfile.write('-jNode\t')
 
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [1,3,6,8]:
+        for j in [0,2,6,8]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,j]))
 
-      for j in [1,3,6,8]:
+      for j in [0,2,6,8]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[-1,j])) 
 
       tclfile.write('-dof\t1\t-perpDirn\t2\n')
 
       tclfile.write('# Define z-direction story drift recorders \n')
-      tclfile.write('recorder\tDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/MidLeaningColumnZDrift.out\t-time\t-iNode\t')
+      tclfile.write('recorder\tEnvelopeDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/MidLeaningColumnZDrift.out\t-time\t-iNode\t')
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [0,2,7]:
+        for j in [3,4,5]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i,j]))
 
-      for j in [0,2,7]:
+      for j in [3,4,5]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[0,j]))
 
       tclfile.write('-jNode\t')
 
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [0,4,5]:
+        for j in [3,4,5]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,j]))
 
-      for j in [0,4,5]:
+      for j in [3,4,5]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[-1,j])) 
 
       tclfile.write('-dof\t3\t-perpDirn\t2\n')
 
-      tclfile.write('recorder\tDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/CornerLeaningColumnZDrift.out\t-time\t-iNode\t')
+      tclfile.write('recorder\tEnvelopeDrift\t-file\t$pathToResults/EQ_$folderNumber/StoryDrifts/CornerLeaningColumnZDrift.out\t-time\t-iNode\t')
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [1,3,6,8]:
+        for j in [0,2,6,8]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i,j]))
 
-      for j in [1,3,6,8]:
+      for j in [0,2,6,8]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[0,j]))
 
       tclfile.write('-jNode\t')
 
       for i in range(BuildingModel.numberOfStories):
 
-        for j in [1,3,6,8]:
+        for j in [0,2,6,8]:
           # Remember to put the central leaning column at the very beginning 
           tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,j]))
 
-      for j in [1,3,6,8]:
+      for j in [0,2,6,8]:
         tclfile.write('%i\t'%(BuildingModel.leaningColumnNodesOpenSeesTags[-1,j])) 
 
       tclfile.write('-dof\t3\t-perpDirn\t2\n')  
@@ -1120,7 +1123,7 @@ def definePushoverLoading3DModel(ModelDirectory, BuildingModel):
 
     # Pay attention to the leaning column nodes, it is better to be the central leaning column 
     for i in range(BuildingModel.numberOfStories):
-      tclfile.write('load\t%i\t%.3f\t%i\t%i\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0],
+      tclfile.write('load\t%i\t%.3f\t%i\t%i\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4],
                                                     BuildingModel.SeismicDesignParameter['Cvx'][i],
                                                     0,0,0,0,0))
     tclfile.write('}')
@@ -1136,7 +1139,7 @@ def definePushoverLoading3DModel(ModelDirectory, BuildingModel):
 
     # Pay attention to the leaning column nodes, it is better to be the central leaning column 
     for i in range(BuildingModel.numberOfStories):
-      tclfile.write('load\t%i\t%i\t%i\t%.3f\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0],0,0,
+      tclfile.write('load\t%i\t%i\t%i\t%.3f\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4],0,0,
                                                     BuildingModel.SeismicDesignParameter['Cvx'][i],
                                                     0,0,0))
     tclfile.write('}')
@@ -1289,7 +1292,7 @@ def setupPushoverAnalysis(ModelDirectory, BuildingModel):
     tclfile.write('model BasicBuilder -ndm 3 -ndf 6 \n\n');
 
     tclfile.write('# Define pushover analysis parameters\n')
-    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,0]))
+    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,4]))
     tclfile.write('set\tIDctrlDOF\t%i\n'%1)
     tclfile.write('set\tDincr\t%.5f\n'%BuildingModel.PushoverParameter['Increment'])
     tclfile.write('set\tDmax\t%.5f\n\n'%(BuildingModel.PushoverParameter['PushoverXDrift']/100*sum(BuildingModel.storyHeights)))
@@ -1339,7 +1342,7 @@ def setupPushoverAnalysis(ModelDirectory, BuildingModel):
     tclfile.write('model BasicBuilder -ndm 3 -ndf 6 \n\n');
 
     tclfile.write('# Define pushover analysis parameters\n')
-    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,0]))
+    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,4]))
     tclfile.write('set\tIDctrlDOF\t%i\n'%3)
     tclfile.write('set\tDincr\t%.5f\n'%BuildingModel.PushoverParameter['Increment'])
     tclfile.write('set\tDmax\t%.5f\n\n'%(BuildingModel.PushoverParameter['PushoverZDrift']/100*sum(BuildingModel.storyHeights)))
@@ -1511,7 +1514,7 @@ def generatePushoverAnalysisModel(ID, BuildingModel, BaseDirectory, DB_Directory
         setupPushoverAnalysis(ModelDirectory + '/PushoverAnalysis', BuildingModel)
         
     if RunPushoverSwitch:
-        os.system("cd %s/PushoverAnalysis"%ModelDirectory)
+        os.chdir("%s/PushoverAnalysis"%ModelDirectory)
         os.system('OpenSees RunXPushoverAnalysis.tcl')
         os.system('OpenSees RunZPushoverAnalysis.tcl')
         

@@ -95,6 +95,7 @@ def ExtractSDR (DynamicDirectory, HazardLevel, NumGM, NumStory):
         for j in range(NumGM[i]):
             SDRDirectory = DynamicDirectory + 'ModelSingleScaleOutputBiDirection/' + 'HazardLevel%d/'%CurrentHazardlevel  + 'EQ_%d/'%(j+1) + 'StoryDrifts/'
             os.chdir(SDRDirectory)
+            print(SDRDirectory)
 
             XMidDrift = np.abs(np.loadtxt(r'MidLeaningColumnXDrift.out'))
             XCorDrift = np.abs(np.loadtxt(r'CornerLeaningColumnXDrift.out'))
@@ -181,14 +182,16 @@ def ExtractPGA (GMDirectory,HazardLevel,NumGM):
         GMName = np.loadtxt('GMFileNames.txt')
 
         # We have 2 perpendicular directions, also consider the responses in each direction respectively
-        for j in range(int(NumGM[i])):
+        for j in range(22):
             os.chdir(GMHistoryDirectory)
             # Arranged by direction, to keep consistent with loss assessment data format
             XPGA = max(np.abs(np.loadtxt('%d.txt'%GMName[2*j])))*ScalingFactor[j]
             ZPGA = max(np.abs(np.loadtxt('%d.txt'%GMName[2*j+1])))*ScalingFactor[j]
 
             PGA.loc[j+NumGM_temp2[i],0] = XPGA
+            PGA.loc[j+NumGM_temp2[i]+22,0] = ZPGA
             PGA.loc[j+NumGM[i]+NumGM_temp2[i],0] = ZPGA
+            PGA.loc[j+NumGM[i]+NumGM_temp2[i]+22,0] = XPGA
     return PGA
 
     

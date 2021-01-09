@@ -15,9 +15,9 @@ tic;
 BaseDirectory = strcat('/Users/rover/Desktop/Cost_Benefit/20190701UpdateDesignForSeismicParameters/Updated Building Performance');
 FunctionDirectory = strcat('/Users/rover/Desktop/WoodFrameBuilding/PostProcessing/Generate SP3 Input');
 
-NumEQ = 44;
+NumEQ = 45;
 NumDir = 2; 
-NumScale = 15; 
+NumScale = 16; 
 for ii = 1:96
     % for ii = 1:length(BuildingNameFile)
     % String used to identify the name of the folder in which the relevant data

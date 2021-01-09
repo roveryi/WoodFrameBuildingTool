@@ -72,6 +72,9 @@ class BuildingModel(object):
       self.numberOfStories = np.genfromtxt('numberOfStories.txt').astype(int)
       self.storyHeights = np.genfromtxt('storyHeights.txt').tolist()
       self.floorHeights = np.cumsum(np.insert(self.storyHeights,0, 0))
+      if self.numberOfStories == 1:
+      	self.storyHeights = [self.storyHeights]
+
 
       self.floorMaximumXDimension = np.genfromtxt('floorMaximumXDimension.txt')
       self.floorMaximumZDimension = np.genfromtxt('floorMaximumZDimension.txt')
@@ -89,9 +92,17 @@ class BuildingModel(object):
       self.ZDirectionWoodPanelsXCoordinates = np.genfromtxt('ZDirectionWoodPanelsXCoordinates.txt')
       self.ZDirectionWoodPanelsZCoordinates = np.genfromtxt('ZDirectionWoodPanelsZCoordinates.txt')
 
+
+      if self.numberOfStories == 1:
+      	self.numberOfXDirectionWoodPanels = self.numberOfXDirectionWoodPanels.reshape(-1,)
+      	self.numberOfZDirectionWoodPanels = self.numberOfZDirectionWoodPanels.reshape(-1,)
+      	self.XDirectionWoodPanelsXCoordinates = self.XDirectionWoodPanelsXCoordinates.reshape(1, -1)
+      	self.XDirectionWoodPanelsZCoordinates = self.XDirectionWoodPanelsZCoordinates.reshape(1, -1)
+      	self.ZDirectionWoodPanelsXCoordinates = self.ZDirectionWoodPanelsXCoordinates.reshape(1, -1)
+      	self.ZDirectionWoodPanelsZCoordinates = self.ZDirectionWoodPanelsZCoordinates.reshape(1, -1)
+
       temp1 = np.zeros([self.XDirectionWoodPanelsXCoordinates.shape[0],self.XDirectionWoodPanelsXCoordinates.shape[1]])
       temp2 = np.zeros([self.XDirectionWoodPanelsXCoordinates.shape[0],self.XDirectionWoodPanelsXCoordinates.shape[1]])
-
       temp3 = np.zeros([self.ZDirectionWoodPanelsZCoordinates.shape[0],self.ZDirectionWoodPanelsZCoordinates.shape[1]])
       temp4 = np.zeros([self.ZDirectionWoodPanelsZCoordinates.shape[0],self.ZDirectionWoodPanelsZCoordinates.shape[1]])
 
@@ -118,6 +129,10 @@ class BuildingModel(object):
       self.floorWeights = np.genfromtxt('floorWeights.txt'); # (kips)
       self.liveLoads = np.genfromtxt('liveLoads.txt'); # (kips per square inch)
       self.leaningcolumnLoads = np.genfromtxt('leaningcolumnLoads.txt'); # (kips)
+      if self.numberOfStories == 1:
+      	self.leaningcolumnLoads = self.leaningcolumnLoads.reshape(1, -1)
+      	self.floorWeights = self.floorWeights.reshape(-1,)
+
 
 ################################################################################################        
 # Read in Pushover Analysis Parameters
@@ -200,7 +215,12 @@ class BuildingModel(object):
       self.ZPanelHeight = np.genfromtxt('height.txt')
       self.ZPanelMaterial = np.genfromtxt('Pinching4MaterialNumber.txt')  
 
-        
+      if self.numberOfStories == 1:
+      	self.XPanelLength = self.XPanelLength.reshape(1, -1)
+      	self.XPanelHeight = self.XPanelHeight.reshape(1, -1)
+      	self.ZPanelLength = self.ZPanelLength.reshape(1, -1)
+      	self.ZPanelHeight = self.ZPanelHeight.reshape(1, -1)
+
 ##################################################################################################        
 # Read in Retrofitted Frame Info
       os.chdir(BaseDirectory + '/FrameRetrofit')
@@ -242,11 +262,14 @@ class BuildingModel(object):
         TL = np.genfromtxt('TL.txt')
         x = 0.75 # for 'All other structural systems' specified in ASCE 7-16 Table 12.8-2
         Ct = 0.02 # for 'All other structural systems' specified in ASCE 7-16 Table 12.8-2
+
         hn = sum(self.storyHeights)/12 # transfer unit to ft
+        TotalWeight = sum(self.floorWeights)
+
         Tu = Cu*Ct*hn**x # Pay attention to the differences between ASCE and FEMA, here use upper bound period specified per ASCE 7-16 as code estimated period in the following calculation
         Cs = self.calculate_Cs_coefficient(SDS, SD1, S1, Tu, TL, R, Ie)
         k = self.determine_k_coeficient(Tu)
-        TotalWeight = sum(self.floorWeights)
+        
         Cvx = self.calculate_Cvx(TotalWeight * Cs, self.floorWeights, self.floorHeights, k)
         self.SeismicDesignParameter = {'Ss': Ss,
                                        'S1': S1,

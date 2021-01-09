@@ -10,33 +10,48 @@ import math
 import os
 import pandas as pd
 import csv
-from BuildingModelClass import BuildingModel
-
+from BuildingModelDynamic import BuildingModelDynamic
+from LossAssessment import *
 
 # Use environment variable to realize parallel computing  
 seed = int(os.getenv('SGE_TASK_ID'))
 
+with open('/u/project/hvburton/roveryi/CEA_Baseline/BuildingName.txt', 'r') as f:
+    BuildingList = f.read() 
+BuildingList = BuildingList.split('\n')
+
+HazardLevel = np.array([0.178, 0.274, 0.444, 0.560, 0.652, 0.790, 0.982, 1.246, 1.564, 2.014, 2.417, 3.021, 3.625, 4.028, 4.431, 5.035])
+NumGM = np.array([45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45])
+CollapseCriteria = 0.2
+DemolitionCriteria = 0.01
+
+RETURN_PERIOD = [15, 25, 50, 75, 100, 150, 250, 500, 1000, 2500, 2700, 3000, 3300, 3500, 3700, 4000]
+RATE = [1/i for i in RETURN_PERIOD]
+HazardData_df = pd.DataFrame(data = [HazardLevel, RATE]).T
+ResultsDir = '/u/project/hvburton/roveryi/Results/'
+
 for i in range(seed,seed+1):
 	# Define inputs for post processing
 	# Make sure to check the case name, number of story, hazard level and number of ground motions to match the current project
-	ProjectName = 'SWOF'
+	ProjectName = 'CEA_Baseline'
 	ID = 'case%s'%i
-	NumStory = 2
-	HazardLevel = np.array([0.177852,0.273467,0.444298,0.5601,0.65216,0.790259,0.982082,1.246203,1.563623, 2.013842])
-	NumGM = np.array([44,44,44,44,44,44,44,44,44,44,44,44,44,44,44])
-	CollapseCriteria = 0.1
-	DemolitionCriteria = 0.01
+
+	NumStory = int(BuildingList[i-1][0]) + int(BuildingList[i-1].split('-')[-1] != 'RB')
 
 	# Perform post processing
-	ModelResults = BuildingModel(ID, '/u/project/hvburton/roveryi/Hoffman/', NumStory, HazardLevel, NumGM, CollapseCriteria, DemolitionCriteria)
+	ModelResults = BuildingModelDynamic(ID, 
+		'/u/project/hvburton/roveryi/%s/'%ProjectName, 
+		NumStory, 
+		HazardLevel, 
+		NumGM, 
+		CollapseCriteria, 
+		DemolitionCriteria)
 
-	# Save the results
-	ResultsDir = '/u/project/hvburton/roveryi/Results/'
-	os.chdir(ResultsDir + '%s/'%ProjectName)
+	
 	# Check if the folder for current model exists
-	if not os.path.exists('./%s'%ID):
-		os.mkdir(ModelResults.ID)
-	os.chdir(ResultsDir + '%s/'%ProjectName+ModelResults.ID)
+	if not os.path.exists(os.path.join(ResultsDir, '%s/'%ProjectName, './%s'%ModelResults.ID)):
+		os.mkdir(os.path.join(ResultsDir, '%s/'%ProjectName, './%s'%ModelResults.ID))
+	os.chdir(os.path.join(ResultsDir, '%s/'%ProjectName, './%s'%ModelResults.ID))
 
 	# Save results 
 	ModelResults.SDR.to_csv('SDR.csv', sep=',', header = False, index = False)        
@@ -46,4 +61,40 @@ for i in range(seed,seed+1):
 	ModelResults.CollapseCount.to_csv('CollapseCount.csv', sep = ',', header = False, index = False)
 	ModelResults.CollapseFragility.to_csv('CollapseFragility.csv', sep='\t', header = False, index = False)    
 	ModelResults.DemolitionFragility.to_csv('DemolitionFragility.csv', sep='\t', header = False, index = False)    
+
+
+
+	ComponentList = pd.read_csv(os.path.join('/u/project/hvburton/roveryi/%s/'%ProjectName, ModelResults.ID, 'ComponentList.csv'))
+    theta_collapse = ModelResults.CollapseFragility.values.T[0]
+    beta = np.array([0.35,0]).reshape([2,1])
+    theta_collapse[1] = np.sqrt(theta_collapse[1]**2 + 0.35**2)
+
+    if NumStory == 1:
+        BuildingValue = 200 * 30 * 40
+    else:
+        BuildingValue = 200 * 30 * 40 * (NumStory - 1)
+
+    Loss = performLossAssessment(ComponentList, 
+    	NumStory, 
+    	CollapseCriteria, 
+    	ModelResults.SDR, 
+    	ModelResults.PFA, 
+    	ModelResults.RDR, 
+    	theta_collapse, 
+    	HazardData_df, 
+    	BuildingValue, 
+    	beta, 
+    	3000, 
+    	'false')
+
+    os.chdir(os.path.join(ResultsDir, '%s/'%ProjectName, './%s'%ModelResults.ID))
+    Loss.to_csv('Loss_intensity.csv')
+
+    EAL = ExpectedAnnulLoss(CLoss = Loss['CollapseLoss'].values.tolist()[0:10],
+    DLoss = Loss['DemolitionLoss'].values.tolist()[0:10],
+    ComLoss = Loss['ComponentLoss'].values.tolist()[0:10],
+    HazardData = HazardData_df.iloc[0:10,:])
+
+    pd.DataFrame(data = EAL.reshape(1,-1), columns = ['Total', 'Collapse', 'Demolition', 'Component']).to_csv('EAL.csv')
+
 

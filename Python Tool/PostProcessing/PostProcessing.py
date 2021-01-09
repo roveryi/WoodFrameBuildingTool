@@ -19,16 +19,21 @@ seed = int(os.getenv('SGE_TASK_ID'))
 for i in range(seed,seed+1):
 	# Define inputs for post processing
 	# Make sure to check the case name, number of story, hazard level and number of ground motions to match the current project
-	ProjectName = 'SWOF'
+	ProjectName = '20200527OrdinanceRedesign'
 	ID = 'case%s'%i
-	NumStory = 2
-	HazardLevel = np.array([0.177852,0.273467,0.444298,0.5601,0.65216,0.790259,0.982082,1.246203,1.563623, 2.013842])
+
+	if i%4 == 1 or i%4 == 2:
+		NumStory = 2
+	elif i%4 == 3 or i%4 == 0:
+		NumStory = 3
+
+	HazardLevel = np.array([0.163,0.326,0.489,0.652,0.815,0.978,1.141,1.304,1.467, 1.63,1.793,1.956,2.118,2.281,2.444])
 	NumGM = np.array([44,44,44,44,44,44,44,44,44,44,44,44,44,44,44])
 	CollapseCriteria = 0.1
 	DemolitionCriteria = 0.01
 
 	# Perform post processing
-	ModelResults = BuildingModel(ID, '/u/project/hvburton/roveryi/Hoffman/', NumStory, HazardLevel, NumGM, CollapseCriteria, DemolitionCriteria)
+	ModelResults = BuildingModel(ID, '/u/project/hvburton/roveryi/%s/'%ProjectName, NumStory, HazardLevel, NumGM, CollapseCriteria, DemolitionCriteria)
 
 	# Save the results
 	ResultsDir = '/u/project/hvburton/roveryi/Results/'

@@ -96,6 +96,7 @@ def defineNodes3DModel(ModelDirectory, BuildingModel):
       
 def defineRigidFloorDiaphragm3DModel(ModelDirectory, BuildingModel):
   os.chdir(ModelDirectory)
+  CENTRAL_LENING_COLUMN = 4
   
   with open('DefineRigidFloorDiaphragm3DModel.tcl', 'w') as tclfile:
     
@@ -111,8 +112,10 @@ def defineRigidFloorDiaphragm3DModel(ModelDirectory, BuildingModel):
       tclfile.write('rigidDiaphragm $perpDirn')
 
       # Leaning column top nodes of story i
+      tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, 4])
       for ii in range(BuildingModel.leaningColumnNodesOpenSeesTags.shape[1]):
-        tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, ii])
+        if ii != 4:
+          tclfile.write('\t %i' %BuildingModel.leaningColumnNodesOpenSeesTags[i, ii])
 
       # All top nodes of story i
       for j in range(BuildingModel.numberOfXDirectionWoodPanels[i-1]):
@@ -1120,7 +1123,7 @@ def definePushoverLoading3DModel(ModelDirectory, BuildingModel):
 
     # Pay attention to the leaning column nodes, it is better to be the central leaning column 
     for i in range(BuildingModel.numberOfStories):
-      tclfile.write('load\t%i\t%.3f\t%i\t%i\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0],
+      tclfile.write('load\t%i\t%.3f\t%i\t%i\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4],
                                                     BuildingModel.SeismicDesignParameter['Cvx'][i],
                                                     0,0,0,0,0))
     tclfile.write('}')
@@ -1136,7 +1139,7 @@ def definePushoverLoading3DModel(ModelDirectory, BuildingModel):
 
     # Pay attention to the leaning column nodes, it is better to be the central leaning column 
     for i in range(BuildingModel.numberOfStories):
-      tclfile.write('load\t%i\t%i\t%i\t%.3f\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,0],0,0,
+      tclfile.write('load\t%i\t%i\t%i\t%.3f\t%i\t%i\t%i;\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[i+1,4],0,0,
                                                     BuildingModel.SeismicDesignParameter['Cvx'][i],
                                                     0,0,0))
     tclfile.write('}')
@@ -1289,7 +1292,7 @@ def setupPushoverAnalysis(ModelDirectory, BuildingModel):
     tclfile.write('model BasicBuilder -ndm 3 -ndf 6 \n\n');
 
     tclfile.write('# Define pushover analysis parameters\n')
-    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,0]))
+    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,4]))
     tclfile.write('set\tIDctrlDOF\t%i\n'%1)
     tclfile.write('set\tDincr\t%.5f\n'%BuildingModel.PushoverParameter['Increment'])
     tclfile.write('set\tDmax\t%.5f\n\n'%(BuildingModel.PushoverParameter['PushoverXDrift']/100*sum(BuildingModel.storyHeights)))
@@ -1339,7 +1342,7 @@ def setupPushoverAnalysis(ModelDirectory, BuildingModel):
     tclfile.write('model BasicBuilder -ndm 3 -ndf 6 \n\n');
 
     tclfile.write('# Define pushover analysis parameters\n')
-    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,0]))
+    tclfile.write('set\tIDctrlNode\t%i\n'%(BuildingModel.leaningColumnNodesOpenSeesTags[BuildingModel.numberOfStories,4]))
     tclfile.write('set\tIDctrlDOF\t%i\n'%3)
     tclfile.write('set\tDincr\t%.5f\n'%BuildingModel.PushoverParameter['Increment'])
     tclfile.write('set\tDmax\t%.5f\n\n'%(BuildingModel.PushoverParameter['PushoverZDrift']/100*sum(BuildingModel.storyHeights)))

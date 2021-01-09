@@ -195,7 +195,7 @@ class AnalysisResults(object):
         DR = DR[0:idx,:]
 
         SDRs = []
-        for i in range(int(self.NumStory)):
+        for i in range(1,int(self.NumStory)+1):
             SDRs.append(DR[:, 3*i])
 
         Results.append(SDRs)

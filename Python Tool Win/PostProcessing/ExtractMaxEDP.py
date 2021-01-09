@@ -93,13 +93,18 @@ def ExtractSDR (DynamicDirectory, HazardLevel, NumGM, NumStory):
 
         # Loop over all ground motions in one hazard level
         for j in range(NumGM[i]):
-            SDRDirectory = DynamicDirectory + 'ModelSingleScaleOutputBiDirection/' + 'HazardLevel%d/'%CurrentHazardlevel  + 'EQ_%d/'%(j+1) + 'StoryDrifts/'
+            SDRDirectory = os.path.join(DynamicDirectory, 'ModelSingleScaleOutputBiDirection', 'HazardLevel%d'%CurrentHazardlevel, 'EQ_%d'%(j+1), 'StoryDrifts')
             os.chdir(SDRDirectory)
 
             XMidDrift = np.abs(np.loadtxt(r'MidLeaningColumnXDrift.out'))
             XCorDrift = np.abs(np.loadtxt(r'CornerLeaningColumnXDrift.out'))
             ZMidDrift = np.abs(np.loadtxt(r'MidLeaningColumnZDrift.out'))
             ZCorDrift = np.abs(np.loadtxt(r'CornerLeaningColumnZDrift.out'))
+            
+            XMidDrift = XMidDrift[:, [0] + [2*i+1 for i in range(int(XMidDrift.shape[1]/2))]]
+            XCorDrift = XCorDrift[:, [0] + [2*i+1 for i in range(int(XCorDrift.shape[1]/2))]]
+            ZMidDrift = ZMidDrift[:, [0] + [2*i+1 for i in range(int(ZMidDrift.shape[1]/2))]]
+            ZCorDrift = ZCorDrift[:, [0] + [2*i+1 for i in range(int(ZCorDrift.shape[1]/2))]]
 
             # XDrift = np.abs(np.loadtxt(r'LeaningColumnXDrift.out'))
             # ZDrift = np.abs(np.loadtxt(r'LeaningColumnZDrift.out'))
@@ -142,13 +147,19 @@ def ExtractRDR (DynamicDirectory, HazardLevel, NumGM, NumStory):
 
         # Loop over all ground motions in one hazard level
         for j in range(NumGM[i]):
-            RDRDirectory = DynamicDirectory + 'ModelSingleScaleOutputBiDirection/' + 'HazardLevel%d/'%CurrentHazardlevel  + 'EQ_%d/'%(j+1) + 'StoryDrifts/'
+            RDRDirectory = os.path.join(DynamicDirectory, 'ModelSingleScaleOutputBiDirection', 'HazardLevel%d'%CurrentHazardlevel, 'EQ_%d'%(j+1), 'StoryDrifts')
+
             os.chdir(RDRDirectory)
 
             XMidDrift = np.abs(np.loadtxt(r'MidLeaningColumnXDrift.out'))
             XCorDrift = np.abs(np.loadtxt(r'CornerLeaningColumnXDrift.out'))
             ZMidDrift = np.abs(np.loadtxt(r'MidLeaningColumnZDrift.out'))
             ZCorDrift = np.abs(np.loadtxt(r'CornerLeaningColumnZDrift.out'))
+
+            XMidDrift = XMidDrift[:, [0] + [2*i+1 for i in range(int(XMidDrift.shape[1]/2))]]
+            XCorDrift = XCorDrift[:, [0] + [2*i+1 for i in range(int(XCorDrift.shape[1]/2))]]
+            ZMidDrift = ZMidDrift[:, [0] + [2*i+1 for i in range(int(ZMidDrift.shape[1]/2))]]
+            ZCorDrift = ZCorDrift[:, [0] + [2*i+1 for i in range(int(ZCorDrift.shape[1]/2))]]
 
             # XDrift = np.abs(np.loadtxt(r'LeaningColumnXDrift.out'))
             # ZDrift = np.abs(np.loadtxt(r'LeaningColumnZDrift.out'))
@@ -161,7 +172,7 @@ def ExtractRDR (DynamicDirectory, HazardLevel, NumGM, NumStory):
                
     return RDR
     
-def ExtractPGA (GMDirectory,HazardLevel,NumGM):
+def ExtractPGA (GMDirectory, HazardLevel, NumGM):
     NumHazardLevel = len(HazardLevel)
     TotalNumGM = np.sum(NumGM)*2 # Number of rows
     NumGM_temp1 = np.insert(NumGM,0,0)*2
@@ -174,21 +185,23 @@ def ExtractPGA (GMDirectory,HazardLevel,NumGM):
         # Define ground motion information stored directory, the information of ground motion of each hazard level shouled be stored in 
         # seperate folder. 
         GMInfoDirectory = GMDirectory + '/%d'%(i+1) + '/GroundMotionInfo'
-        GMHistoryDirectory =  GMDirectory + '/%d'%(i+1) + '/histories'
+        GMHistoryDirectory =  GMDirectory + '/histories'
 
         os.chdir (GMInfoDirectory)
         ScalingFactor = np.loadtxt(r'BiDirectionMCEScaleFactors.txt')
-        GMName = np.loadtxt('GMFileNames.txt')
+        GMName = np.loadtxt('GMFileNames.txt', dtype=str)
 
         # We have 2 perpendicular directions, also consider the responses in each direction respectively
-        for j in range(int(NumGM[i])):
+        for j in range(NumGM[i]):
             os.chdir(GMHistoryDirectory)
             # Arranged by direction, to keep consistent with loss assessment data format
-            XPGA = max(np.abs(np.loadtxt('%d.txt'%GMName[2*j])))*ScalingFactor[j]
-            ZPGA = max(np.abs(np.loadtxt('%d.txt'%GMName[2*j+1])))*ScalingFactor[j]
+            XPGA = max(np.abs(np.loadtxt('%s'%GMName[2*j], dtype = float)))*ScalingFactor[j]
+            ZPGA = max(np.abs(np.loadtxt('%s'%GMName[2*j+1], dtype = float)))*ScalingFactor[j]
 
             PGA.loc[j+NumGM_temp2[i],0] = XPGA
+            PGA.loc[j+NumGM_temp2[i]+NumGM[i],0] = ZPGA
             PGA.loc[j+NumGM[i]+NumGM_temp2[i],0] = ZPGA
+            PGA.loc[j+NumGM[i]+NumGM_temp2[i]+NumGM[i],0] = XPGA
     return PGA
 
     
@@ -219,7 +232,7 @@ def ExtractPFA (DynamicDirectory, HazardLevel, NumGM, NumStory, PGA, g = 386.4):
 
         # Loop over all ground motions in one hazard level
         for j in range(NumGM[i]):
-            PFADirectory = DynamicDirectory + 'ModelSingleScaleOutputBiDirection/' + 'HazardLevel%d/'%CurrentHazardlevel  + 'EQ_%d/'%(j+1) + 'NodeAccelerations/'
+            PFADirectory = os.path.join(DynamicDirectory, 'ModelSingleScaleOutputBiDirection', 'HazardLevel%d'%CurrentHazardlevel, 'EQ_%d'%(j+1), 'NodeAccelerations')
             os.chdir(PFADirectory)
 
             # Loop over all stories 
@@ -231,12 +244,6 @@ def ExtractPFA (DynamicDirectory, HazardLevel, NumGM, NumStory, PGA, g = 386.4):
                 PFA.loc[NumGM_temp2[i]+NumGM_temp1[i+1]/2+j,k+4] = max(ZAcc[:,1])/g
             
     return PFA
-
-    
-
-
-# In[5]:
-
 
 def Count(EDP, Criteria, NumGM):
     # This function is used for counting the number of violations (collapse, exceed specific damage state, demolition) given criteria
@@ -259,17 +266,13 @@ def Count(EDP, Criteria, NumGM):
         
     return NumCount
 
-
-# In[9]:
-
-
 # This part is used for function fit (especially for lognoraml distribution) using MLE and SSE given EDP violations counting
 # NumCount : Number of violations to specific criteria (collapse, damage state, demolition)
 # HazardLevel: Sas of analysis
 # NumGM: Number of ground motions in each hazard level
 
 # Negative log-likelihood function
-def neg_loglik(theta, HazardLevel, NumCount, NumGM ):
+def neg_loglik(theta, HazardLevel, NumCount, NumGM):
     
     p_pred = norm.cdf(np.log(HazardLevel), loc = np.log(theta[0]), scale = np.log(theta[1]))
     likelihood = binom.pmf(NumCount, NumGM, p_pred)

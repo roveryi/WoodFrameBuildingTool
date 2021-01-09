@@ -1,0 +1,56 @@
+1	Horizontal wood siding walls spring 1 super structure
+2	Horizontal wood siding walls spring 2 super structure
+3	Horizontal siding with plaster on wood lath spring 1
+4	Horizontal siding with plaster on wood lath spring 2
+5	Stucco with gypsum wallboard best estimate spring 1
+6	Stucco with gypsum wallboard best estimate spring 2
+7	Stucco with gypsum wallboard lower bound spring 1
+8	Stucco with gypsum wallboard lower bound spring 2
+9	Stucco with gypsum wallboard upper bound spring 1
+10	Stucco with gypsum wallboard upper bound spring 2
+11	Stucco with plaster on wood lath spring 1
+12	Stucco with plaster on wood lath spring 2
+13	Panelized plywood siding with gypsum wallboard spring 1
+14	Panelized plywood siding with gypsum wallboard spring 2
+15	Gypsum wallboard best estimate spring 1
+16	Gypsum wallboard best estimate spring 2
+17	Gypsum wallboard G1 spring 1
+18	Gypsum wallboard G1 spring 2
+19	Gypsum wallboard G3 spring 1
+20	Gypsum wallboard G3 spring 2
+21	Plaster on wood lath spring 1
+22	Plaster on wood lath spring 2
+23	2ft stucco best estimate spring 1
+24	2ft stucco best estimate spring 2
+25	2ft stucco S1 spring 1
+26	2ft stucco S1 spring 2
+27	2ft stucco S3 spring 1
+28	2ft stucco S3 spring 2
+29	6ft stucco spring 1
+30	6ft stucco spring 2
+31	2ft retrofit stucco best estimate spring 1
+32	2ft retrofit stucco best estimate spring 2
+33	2ft retrofit stucco R1 spring 1
+34	2ft retrofit stucco R1 spring 2
+35	6ft retrofit stucco spring 1
+36	6ft retrofit stucco spring 2
+37	Horizontal wood siding best estimate spring 1
+38	Horizontal wood siding best estimate spring 2
+39	Horizontal wood siding HS1 spring 1
+40	Horizontal wood siding HS1 spring 2
+41	2ft horizontal wood siding retrofit best estimate spring 1
+42	2ft horizontal wood siding retrofit best estimate spring 2
+43	2ft horizontal wood siding retrofit R1 spring 1
+44	2ft horizontal wood siding retrofit R1 spring 2
+45	6ft horizontal wood siding retrofit best estimate spring 1
+46	6ft horizontal wood siding retrofit best estimate spring 2
+47	2ft T1-11 spring 1
+48	2ft T1-11 spring 2
+49	2ft T1-11 retrofit spring 1
+50	2ft T1-11 retrofit spring 2
+51	6ft T1-11 spring 1
+52	6ft T1-11 spring 2
+53	6ft T1-11 retrofit spring 1
+54	6ft T1-11 retrofit spring 2
+
+
